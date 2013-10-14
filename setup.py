@@ -22,7 +22,7 @@ setup(
     include_package_data=True,
     install_requires = ['boto'],
     py_modules=['radosgw'],
-    url='https://github.com/tax/python-requests-aws',
+    url='https://github.com/valerytschopp/python-radosgw-admin',
     license='Apache2, see LICENCE',
     description='Ceph RADOS Gateway admin operations REST API',
     long_description=open('README.md').read(),

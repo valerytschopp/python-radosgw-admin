@@ -1,4 +1,4 @@
 python-radosgw-admin
 ====================
 
-REST API for the RADOS GW admin operations
+Python REST API for the Ceph RADOS Gateway (radosgw) admin operations

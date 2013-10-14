@@ -16,7 +16,7 @@
 # @author: Valery Tschopp <valery.tshopp@switch.ch>
 
 """
-Connection to a CEPH RADOS Gateway (radosgw) admin service.
+Connection to a Ceph RADOS Gateway (radosgw) admin service.
 """
 
 import boto
@@ -24,10 +24,10 @@ from boto.connection import AWSAuthConnection
 import json
 import urllib
 
-from exception import RadosGatewayAdminError
+import exception
 from user import UserInfo
 
-class RadosGatewayAdminConnection(AWSAuthConnection):
+class RadosGWAdminConnection(AWSAuthConnection):
     """CEPH RADOS Gateway (radosgw) admin operations connection.
     @see http://ceph.com/docs/next/radosgw/adminops/
     """
@@ -101,7 +101,7 @@ class RadosGatewayAdminConnection(AWSAuthConnection):
         else:
             boto.log.error('%s %s' % (response.status, response.reason))
             boto.log.error('%s' % body)
-            raise RadosGatewayAdminError(response.status, response.reason, body)
+            raise exception.factory(response.status, response.reason, body)
 
     def _kwargs_get(self,key,kwargs,params,default= None):
         nkey= key.replace('_','-')
@@ -133,8 +133,8 @@ class RadosGatewayAdminConnection(AWSAuthConnection):
     def get_user(self, uid, **kwargs):
         """Get the user information.
         :param str uid: the user user_id
-        :returns 'user.UserInfo': the user info
-        :throws 'exception.RadosGatewayAdminError': if an error occurs
+        :returns 'radosgw.user.UserInfo': the user info
+        :throws 'radosgw.exception.RadosGWAdminError': if an error occurs
         :see: http://ceph.com/docs/next/radosgw/adminops/#get-user-info
         """
         # mandatory query parameters

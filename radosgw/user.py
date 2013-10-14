@@ -15,7 +15,7 @@
 #
 # @author: Valery Tschopp <valery.tshopp@switch.ch>
 
-"""CEPH RADOS Gateway User Information."""
+"""Ceph RADOS Gateway User Information."""
 
 class UserInfo(object):
     """RADOS Gateway User Info"""

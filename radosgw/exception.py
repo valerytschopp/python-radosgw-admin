@@ -38,7 +38,7 @@ class RadosGWAdminError(BotoServerError):
         return '%s (%s %s)' % (self.code, self.status, self.reason)
 
 def factory(status, reason, body=None, *args):
-    """Returns the correct error, based on the error code"""
+    """Returns the correct error, based on the error code in the body"""
     exception= None
     if body:
         error= json.loads(body)

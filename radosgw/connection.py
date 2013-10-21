@@ -14,55 +14,93 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # @author: Valery Tschopp <valery.tshopp@switch.ch>
-
-"""
-Connection to a Ceph RADOS Gateway (radosgw) admin service.
-"""
-
-import boto
-from boto.connection import AWSAuthConnection
+"""Connections to a Ceph RADOS Gateway (radosgw) service."""
 import json
 import urllib
+import boto.connection
+import boto.s3.bucket
+import boto.s3.connection
 
-import exception
-from user import UserInfo
+import radosgw.exception
+from radosgw.user import UserInfo
+from radosgw.bucket import BucketInfo
 
-class RadosGWAdminConnection(AWSAuthConnection):
+# utilities
+def _kwargs_get(key, kwargs, params, default=None):
+    nkey = key.replace('_','-')
+    if kwargs.has_key(key):
+        params[nkey] = kwargs[key]
+    elif default != None:
+        params[nkey] = default
+
+class RadosGWS3Connection(boto.s3.connection.S3Connection):
+    """S3 connection to a RADOS Gateway (radosgw)"""
+    def __init__(self,
+                 access_key, secret_key,
+                 host,
+                 calling_format='boto.s3.connection.OrdinaryCallingFormat',
+                 is_secure=True, port=None, proxy=None, proxy_port=None,
+                 proxy_user=None, proxy_pass=None,
+                 debug=0, https_connection_factory=None,
+                 path='/',
+                 bucket_class=boto.s3.bucket.Bucket, security_token=None,
+                 suppress_consec_slashes=True, anon=False,
+                 validate_certs=None):
+        boto.s3.connection.S3Connection.__init__(self,
+                                                 aws_access_key_id=access_key,
+                                                 aws_secret_access_key=secret_key,
+                                                 host=host,
+                                                 port=port,
+                                                 is_secure=is_secure,
+                                                 proxy=proxy,
+                                                 proxy_port=proxy_port,
+                                                 proxy_user=proxy_user,
+                                                 proxy_pass=proxy_pass,
+                                                 debug=debug,
+                                                 https_connection_factory=https_connection_factory,
+                                                 calling_format=calling_format,
+                                                 path=path,
+                                                 provider='aws',
+                                                 bucket_class=bucket_class,
+                                                 security_token=security_token,
+                                                 suppress_consec_slashes=suppress_consec_slashes,
+                                                 anon=anon,
+                                                 validate_certs=validate_certs)
+
+
+class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
     """CEPH RADOS Gateway (radosgw) admin operations connection.
     @see http://ceph.com/docs/next/radosgw/adminops/
     """
-    DefaultAdminPath = boto.config.get('radosgw', 'admin_path', '/admin')
-
-    def __init__(self, 
-                 aws_access_key_id, aws_secret_access_key,
+    def __init__(self,
+                 access_key, secret_key,
                  host,
-                 admin_path=None,
-                 is_secure=True, port=None, 
-                 proxy=None, proxy_port=None, proxy_user=None, proxy_pass=None, 
+                 admin_path='/admin',
+                 is_secure=True, port=None,
+                 proxy=None, proxy_port=None, proxy_user=None, proxy_pass=None,
                  debug=0,
                  https_connection_factory=None, security_token=None,
                  validate_certs=True):
+        """Constructor."""
 
-        self.admin_path = self.DefaultAdminPath
-        if admin_path:
-            self.admin_path= admin_path
+        self.admin_path = admin_path
+        boto.connection.AWSAuthConnection.__init__(self,
+                                                   host=host,
+                                                   aws_access_key_id=access_key,
+                                                   aws_secret_access_key=secret_key,
+                                                   is_secure=is_secure, port=port,
+                                                   proxy=proxy, proxy_port=proxy_port,
+                                                   proxy_user=proxy_user, proxy_pass=proxy_pass,
+                                                   debug=debug,
+                                                   https_connection_factory=https_connection_factory,
+                                                   path=self.admin_path,
+                                                   provider='aws',
+                                                   security_token=security_token,
+                                                   suppress_consec_slashes=True,
+                                                   validate_certs=validate_certs)
 
-        AWSAuthConnection.__init__(self, 
-                                   host=host, 
-                                   aws_access_key_id=aws_access_key_id,
-                                   aws_secret_access_key=aws_secret_access_key,
-                                   is_secure=is_secure, port=port, 
-                                   proxy=proxy, proxy_port=proxy_port, 
-                                   proxy_user=proxy_user, proxy_pass=proxy_pass, 
-                                   debug=debug,
-                                   https_connection_factory=https_connection_factory, 
-                                   path=self.admin_path,
-                                   provider='aws', 
-                                   security_token=security_token,
-                                   suppress_consec_slashes=True,
-                                   validate_certs=validate_certs)
-    
     def get_admin_path(self):
+        """Returns the admin query path prefix."""
         return self.admin_path
 
     def _required_auth_capability(self):
@@ -70,29 +108,29 @@ class RadosGWAdminConnection(AWSAuthConnection):
         return ['hmac-v1']
 
     def make_request(self, method, path, query_params=None, headers=None, data='', host=None,
-                     sender=None,override_num_retries=None, retry_handler=None):
-        """Makes a request to the Rados GW admin server.
+                     sender=None, override_num_retries=None, retry_handler=None):
+        """Makes a request to the RADOS GW admin server.
         :param str method: GET|PUT|HEAD|POST|DELETE|...
         :param str path: admin sub request path (i.e. /user)
         :param dict query_params: url query parameters
         :returns boto.connection.HttpResponse response: the HTTP response
         """
-        auth_path= path
+        auth_path = path
         if not query_params:
             query_params = {}
         else:
-            query= urllib.urlencode(query_params)
-            path= path + '?' + query
+            query = urllib.urlencode(query_params)
+            path = path + '?' + query
         http_request = self.build_base_http_request(method, path, auth_path,
                                                     query_params, headers, data, host)
         boto.log.debug('http_request:%s' % http_request)
         return self._mexe(http_request, sender, override_num_retries,
                           retry_handler=retry_handler)
 
-    def _process_response(self,response):
+    def _process_response(self, response):
         """Processes the response and returns the body or throws an error."""
         body = response.read()
-        boto.log.debug('status: %d body: %s' % (response.status,body))
+        boto.log.debug('status: %d body: %s' % (response.status, body))
         if response.status == 200:
             if not body:
                 return None
@@ -101,32 +139,39 @@ class RadosGWAdminConnection(AWSAuthConnection):
         else:
             boto.log.error('%s %s' % (response.status, response.reason))
             boto.log.error('%s' % body)
-            raise exception.factory(response.status, response.reason, body)
+            raise radosgw.exception.factory(response.status, response.reason, body)
 
-    def _kwargs_get(self,key,kwargs,params,default= None):
-        nkey= key.replace('_','-')
-        if kwargs.has_key(key):
-            params[nkey]= kwargs[key]
-        elif default != None:
-            params[nkey]= default
-        
-    # uid= None, start= None, end= None, show_summary= True, show_entries= True, format= 'json' 
-    def get_usage(self, **kwargs): 
+    # uid= None, start= None, end= None, show_summary= True, show_entries= True, format= 'json'
+    def get_usage(self, **kwargs):
+        """Gets bandwidth usage information. Doesn't work!
+        :see: http://ceph.com/docs/next/radosgw/adminops/#get-usage
         """
-        @see http://ceph.com/docs/next/radosgw/adminops/#get-usage
-        """
+        params = {}
+        _kwargs_get('uid', kwargs, params)
+        _kwargs_get('start', kwargs, params)
+        _kwargs_get('end', kwargs, params)
+        _kwargs_get('show_summary', kwargs, params, True)
+        _kwargs_get('show_entries', kwargs, params, True)
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('GET', path='/usage', query_params=params)
+        body = self._process_response(response)
+        usage = json.loads(body)
+        return usage
+
+    def get_users(self, **kwargs):
+        """Get all the users information."""
+        params = {}
         # optional query parameters
-        params= {}
-        self._kwargs_get('format',kwargs, params,'json')
-        self._kwargs_get('uid',kwargs, params)
-        self._kwargs_get('start',kwargs, params)
-        self._kwargs_get('end',kwargs, params)
-        self._kwargs_get('show_summary', kwargs, params)
-        self._kwargs_get('show_entries', kwargs, params)
-
-        # send and process
-        response = self.make_request('GET',path='/usage',query_params=params)
-        return self._process_response(response)
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('GET', path='/metadata/user', query_params=params)
+        body = self._process_response(response)
+        uids = json.loads(body)
+        users = []
+        for uid in uids:
+            boto.log.debug('uid: %s' % uid)
+            user = self.get_user(uid)
+            users.append(user)
+        return users
 
     # uid= UID
     # format= 'json'
@@ -138,86 +183,107 @@ class RadosGWAdminConnection(AWSAuthConnection):
         :see: http://ceph.com/docs/next/radosgw/adminops/#get-user-info
         """
         # mandatory query parameters
-        params= {'uid': uid}
+        params = {'uid': uid}
         # optional query parameters
-        self._kwargs_get('format',kwargs, params,'json')
-        response = self.make_request('GET',path='/user',query_params=params)
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('GET', path='/user', query_params=params)
         body = self._process_response(response)
-        user_dict= json.loads(body)
-        user= UserInfo(self,user_dict)
+        user_dict = json.loads(body)
+        user = UserInfo(self, user_dict)
         return user
 
     # uid= UID
     # display_name= DISPLAY_NAME
-    # email= None, key_type= 's3|swift', 
-    # access_key= None, secret_key= None, user_caps= None, generate_key= True, 
+    # email= None, key_type= 's3|swift',
+    # access_key= None, secret_key= None, user_caps= None, generate_key= True,
     # max_buckets= None, suspended= False, format= 'json'
     def create_user(self, uid, display_name, **kwargs):
         """
         http://ceph.com/docs/next/radosgw/adminops/#create-user
         """
-        # mandatory query parameters        
-        params= {'uid': uid, 'display-name': display_name}
-        # optional query parameters        
-        self._kwargs_get('format',kwargs, params,'json')
-        self._kwargs_get('email', kwargs, params)
-        self._kwargs_get('key_type', kwargs, params)
-        self._kwargs_get('access_key', kwargs, params)
-        self._kwargs_get('secret_key', kwargs, params)
-        self._kwargs_get('user_caps', kwargs, params)
-        self._kwargs_get('generate_key', kwargs, params)
-        response = self.make_request('PUT',path='/user',query_params=params)
+        # mandatory query parameters
+        params = {'uid': uid, 'display-name': display_name}
+        # optional query parameters
+        _kwargs_get('format', kwargs, params, 'json')
+        _kwargs_get('email', kwargs, params)
+        _kwargs_get('key_type', kwargs, params, 's3')
+        _kwargs_get('access_key', kwargs, params)
+        _kwargs_get('secret_key', kwargs, params)
+        _kwargs_get('user_caps', kwargs, params)
+        _kwargs_get('generate_key', kwargs, params, True)
+        response = self.make_request('PUT', path='/user', query_params=params)
         body = self._process_response(response)
-        user_dict= json.loads(body)
-        user= UserInfo(self,user_dict)
+        user_dict = json.loads(body)
+        user = UserInfo(self, user_dict)
         return user
 
     # uid= UID
     # display_name= DISPLAY_NAME
-    # email= None, key_type= 's3|swift', 
-    # access_key= None, secret_key= None, user_caps= None, generate_key= False, 
+    # email= None, key_type= 's3|swift',
+    # access_key= None, secret_key= None, user_caps= None, generate_key= False,
     # max_buckets= None, suspended= False, format= 'json'
-    def update_user(self,uid,display_name,**kwargs):
+    def update_user(self, uid, **kwargs):
         """
         http://ceph.com/docs/next/radosgw/adminops/#modify-user
         """
-        # mandatory query parameters        
-        params= {'uid': uid, 'display-name': display_name}
-        # optional query parameters        
-        self._kwargs_get('format',kwargs, params,'json')
-        self._kwargs_get('email', kwargs, params)
-        self._kwargs_get('key_type', kwargs, params)
-        self._kwargs_get('access_key', kwargs, params)
-        self._kwargs_get('secret_key', kwargs, params)
-        self._kwargs_get('user_caps', kwargs, params)
-        self._kwargs_get('generate_key', kwargs, params, False)
+        params = {'uid': uid}
+        # optional query parameters
+        _kwargs_get('display_name', kwargs, params)
+        _kwargs_get('email', kwargs, params)
+        _kwargs_get('key_type', kwargs, params)
+        _kwargs_get('access_key', kwargs, params)
+        _kwargs_get('secret_key', kwargs, params)
+        _kwargs_get('user_caps', kwargs, params)
+        _kwargs_get('generate_key', kwargs, params, False)
+        _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('POST', path='/user', query_params=params)
         body = self._process_response(response)
-        user_dict= json.loads(body)
-        user= UserInfo(self,user_dict)
+        user_dict = json.loads(body)
+        user = UserInfo(self, user_dict)
         return user
 
-    def delete_user(self,uid,purge_data=False):
+    def delete_user(self, uid, purge_data=True, **kwargs):
         """Delete a user identified by uid.
         :param str uid: the user_id
-        :param bool purge_data: purge the user data. default: False
+        :param bool purge_data: purge the user data. default: True
         :returns bool:
         :see: http://ceph.com/docs/next/radosgw/adminops/#remove-user
         """
-        params= {'uid': uid, 'purge-data': purge_data}
-        response = self.make_request('DELETE',path='/user',query_params=params)
+        params = {'uid': uid, 'purge-data': purge_data}
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('DELETE', path='/user', query_params=params)
         return self._process_response(response) is None
 
-    def get_bucket(self,**kwargs):
+    def get_bucket(self, bucket, **kwargs):
         """
-        http://ceph.com/docs/next/radosgw/adminops/#get-bucket-info
+        :see: http://ceph.com/docs/next/radosgw/adminops/#get-bucket-info
         """
-        params= {}
-        self._kwargs_get('format',kwargs, params,'json')
-        self._kwargs_get('bucket',kwargs, params)
-        self._kwargs_get('uid',kwargs, params)
-        self._kwargs_get('stats',kwargs, params, True)
+        params = {'bucket': bucket}
+        _kwargs_get('bucket', kwargs, params)
+        _kwargs_get('stats', kwargs, params, True)
+        _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('GET', path='/bucket', query_params=params)
         body = self._process_response(response)
-        return body
-    
+        bucket_dict = json.loads(body)
+        #print json.dumps(bucket_dict, indent=4, sort_keys=True)
+        bucket = BucketInfo(self, bucket_dict)
+        return bucket
+
+    def get_buckets(self, uid=None, **kwargs):
+        """Get all, or user specific, buckets information.
+        :see: http://ceph.com/docs/next/radosgw/adminops/#get-bucket-info
+        """
+        params = {}
+        if uid:
+            params = {'uid': uid}
+        # optional query parameters
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('GET', path='/bucket', query_params=params)
+        body = self._process_response(response)
+        bucket_names = json.loads(body)
+        buckets = []
+        for bucket_name in bucket_names:
+            boto.log.debug('bucket_name: %s' % bucket_name)
+            bucket = self.get_bucket(bucket=bucket_name)
+            buckets.append(bucket)
+        return buckets

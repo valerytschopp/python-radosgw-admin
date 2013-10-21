@@ -22,7 +22,7 @@ import boto.exception
 import boto.utils
 
 class RadosGWAdminError(boto.exception.BotoServerError):
-    """Ceph RADOS Gateway admin operation error."""
+    """Ceph RADOS Gateway admin operation generic error."""
     def __init__(self, status, reason, body=None, *args):
         boto.exception.BotoServerError.__init__(self,
                                                 status,

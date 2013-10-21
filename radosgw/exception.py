@@ -15,85 +15,91 @@
 #
 # @author: Valery Tschopp <valery.tshopp@switch.ch>
 
-import json
-from boto.exception import BotoServerError
+"""Ceph RADOS Gateway exceptions."""
 
-class RadosGWAdminError(BotoServerError):
-    """Ceph RADOS Gateway Admin Operation Error"""
+import json
+import boto.exception
+
+class RadosGWAdminError(boto.exception.BotoServerError):
+    """Ceph RADOS Gateway admin operation error."""
     def __init__(self, status, reason, body=None, *args):
-        BotoServerError.__init__(self, status, reason, body, *args)
+        boto.exception.BotoServerError.__init__(self,
+                                                status,
+                                                reason,
+                                                body,
+                                                *args)
         if body:
-            error= json.loads(body)
-            self.code= error['Code']
+            error = json.loads(body)
+            self.code = error['Code']
         else:
-            self.code= 'UnknownError'
+            self.code = 'UnknownError'
 
     def get_code(self):
+        """Returns the error code."""
         return self.code
 
     def __repr__(self):
         return '%s (%s %s)' % (self.code, self.status, self.reason)
-    
+
     def __str__(self):
         return '%s (%s %s)' % (self.code, self.status, self.reason)
 
 def factory(status, reason, body=None, *args):
-    """Returns the correct error, based on the error code in the body"""
-    exception= None
+    """Returns the correct error, based on the error code in the body."""
+    exception = None
     if body:
-        error= json.loads(body)
-        code= error['Code']
+        error = json.loads(body)
+        code = error['Code']
         if code == 'AccessDenied':
-            exception= AccessDenied(status,reason,body,args)
+            exception = AccessDenied(status, reason, body, args)
         elif code == 'UserExists':
-            exception= UserExists(status,reason,body,args)
+            exception = UserExists(status, reason, body, args)
         elif code == 'InvalidAccessKey':
-            exception= InvalidAccessKey(status,reason,body,args)
+            exception = InvalidAccessKey(status, reason, body, args)
         elif code == 'InvalidKeyType':
-            exception= InvalidKeyType(status,reason,body,args)
+            exception = InvalidKeyType(status, reason, body, args)
         elif code == 'InvalidSecretKey':
-            exception= InvalidSecretKey(status,reason,body,args)
+            exception = InvalidSecretKey(status, reason, body, args)
         elif code == 'KeyExists':
-            exception= KeyExists(status,reason,body,args)
+            exception = KeyExists(status, reason, body, args)
         elif code == 'EmailExists':
-            exception= EmailExists(status,reason,body,args)
+            exception = EmailExists(status, reason, body, args)
         elif code == 'SubuserExists':
-            exception= SubuserExists(status,reason,body,args)
+            exception = SubuserExists(status, reason, body, args)
         elif code == 'InvalidAccess':
-            exception= InvalidAccess(status,reason,body,args)
+            exception = InvalidAccess(status, reason, body, args)
         elif code == 'IndexRepairFailed':
-            exception= IndexRepairFailed(status,reason,body,args)
+            exception = IndexRepairFailed(status, reason, body, args)
         elif code == 'BucketNotEmpty':
-            exception= BucketNotEmpty(status,reason,body,args)
+            exception = BucketNotEmpty(status, reason, body, args)
         elif code == 'ObjectRemovalFailed':
-            exception= ObjectRemovalFailed(status,reason,body,args)
+            exception = ObjectRemovalFailed(status, reason, body, args)
         elif code == 'BucketUnlinkFailed':
-            exception= BucketUnlinkFailed(status,reason,body,args)
+            exception = BucketUnlinkFailed(status, reason, body, args)
         elif code == 'BucketLinkFailed':
-            exception= BucketLinkFailed(status,reason,body,args)
+            exception = BucketLinkFailed(status, reason, body, args)
         elif code == 'NoSuchObject':
-            exception= NoSuchObject(status,reason,body,args)
+            exception = NoSuchObject(status, reason, body, args)
         elif code == 'IncompleteBody':
-            exception= IncompleteBody(status,reason,body,args)
+            exception = IncompleteBody(status, reason, body, args)
         elif code == 'InvalidCap':
-            exception= InvalidCap(status,reason,body,args)
+            exception = InvalidCap(status, reason, body, args)
         elif code == 'NoSuchCap':
-            exception= NoSuchCap(status,reason,body,args)
+            exception = NoSuchCap(status, reason, body, args)
         elif code == 'InternalError':
-            exception= InternalError(status,reason,body,args)
+            exception = InternalError(status, reason, body, args)
         elif code == 'NoSuchUser':
-            exception= NoSuchUser(status,reason,body,args)
+            exception = NoSuchUser(status, reason, body, args)
         elif code == 'NoSuchBucket':
-            exception= NoSuchBucket(status,reason,body,args)
+            exception = NoSuchBucket(status, reason, body, args)
         elif code == 'NoSuchKey':
-            exception= NoSuchKey(status,reason,body,args)
+            exception = NoSuchKey(status, reason, body, args)
 
     if not exception:
-        exception= RadosGWAdminError(status,reason,body,args)
-            
-    return exception 
-        
-    
+        exception = RadosGWAdminError(status, reason, body, args)
+
+    return exception
+
 class AccessDenied(RadosGWAdminError):
     """Access was denied for the request."""
 

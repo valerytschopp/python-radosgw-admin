@@ -15,6 +15,8 @@
 #
 # @author: Valery Tschopp <valery.tshopp@switch.ch>
 
+"""Ceph RADOS Gateway (radosgw) S3 and admin operations."""
+
 __version__ = '1.0'
 
 def get_version():

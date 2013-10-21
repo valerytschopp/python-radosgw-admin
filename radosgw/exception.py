@@ -33,14 +33,14 @@ class RadosGWAdminError(boto.exception.BotoServerError):
             error = json.loads(body)
             self.code = error['Code']
         else:
-            self.code = 'UnknownError'
+            self.code = self.__class__.__name__
 
     def get_code(self):
         """Returns the error code."""
         return self.code
 
     def __repr__(self):
-        return '%s (%s %s)' % (self.__class__.__name__, self.status, self.reason)
+        return '%s (%s %s)' % (self.code, self.status, self.reason)
 
     def __str__(self):
         return '%s (%s %s)' % (self.code, self.status, self.reason)

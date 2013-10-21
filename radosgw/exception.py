@@ -19,6 +19,7 @@
 
 import json
 import boto.exception
+import boto.utils
 
 class RadosGWAdminError(boto.exception.BotoServerError):
     """Ceph RADOS Gateway admin operation error."""
@@ -39,63 +40,22 @@ class RadosGWAdminError(boto.exception.BotoServerError):
         return self.code
 
     def __repr__(self):
-        return '%s (%s %s)' % (self.code, self.status, self.reason)
+        return '%s (%s %s)' % (self.__class__.__name__, self.status, self.reason)
 
     def __str__(self):
         return '%s (%s %s)' % (self.code, self.status, self.reason)
 
 def factory(status, reason, body=None, *args):
     """Returns the correct error, based on the error code in the body."""
-    exception = None
     if body:
         error = json.loads(body)
         code = error['Code']
-        if code == 'AccessDenied':
-            exception = AccessDenied(status, reason, body, args)
-        elif code == 'UserExists':
-            exception = UserExists(status, reason, body, args)
-        elif code == 'InvalidAccessKey':
-            exception = InvalidAccessKey(status, reason, body, args)
-        elif code == 'InvalidKeyType':
-            exception = InvalidKeyType(status, reason, body, args)
-        elif code == 'InvalidSecretKey':
-            exception = InvalidSecretKey(status, reason, body, args)
-        elif code == 'KeyExists':
-            exception = KeyExists(status, reason, body, args)
-        elif code == 'EmailExists':
-            exception = EmailExists(status, reason, body, args)
-        elif code == 'SubuserExists':
-            exception = SubuserExists(status, reason, body, args)
-        elif code == 'InvalidAccess':
-            exception = InvalidAccess(status, reason, body, args)
-        elif code == 'IndexRepairFailed':
-            exception = IndexRepairFailed(status, reason, body, args)
-        elif code == 'BucketNotEmpty':
-            exception = BucketNotEmpty(status, reason, body, args)
-        elif code == 'ObjectRemovalFailed':
-            exception = ObjectRemovalFailed(status, reason, body, args)
-        elif code == 'BucketUnlinkFailed':
-            exception = BucketUnlinkFailed(status, reason, body, args)
-        elif code == 'BucketLinkFailed':
-            exception = BucketLinkFailed(status, reason, body, args)
-        elif code == 'NoSuchObject':
-            exception = NoSuchObject(status, reason, body, args)
-        elif code == 'IncompleteBody':
-            exception = IncompleteBody(status, reason, body, args)
-        elif code == 'InvalidCap':
-            exception = InvalidCap(status, reason, body, args)
-        elif code == 'NoSuchCap':
-            exception = NoSuchCap(status, reason, body, args)
-        elif code == 'InternalError':
-            exception = InternalError(status, reason, body, args)
-        elif code == 'NoSuchUser':
-            exception = NoSuchUser(status, reason, body, args)
-        elif code == 'NoSuchBucket':
-            exception = NoSuchBucket(status, reason, body, args)
-        elif code == 'NoSuchKey':
-            exception = NoSuchKey(status, reason, body, args)
-
-    if not exception:
+        exception_class= boto.utils.find_class(__name__, code)
+        if exception_class:
+            exception = exception_class(status, reason, body, args)
+        else:
+            exception = RadosGWAdminError(status, reason, body, args)
+    else:
         exception = RadosGWAdminError(status, reason, body, args)
 
     return exception

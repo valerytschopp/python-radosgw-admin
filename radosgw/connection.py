@@ -25,13 +25,6 @@ import radosgw.exception
 from radosgw.user import UserInfo
 from radosgw.bucket import BucketInfo
 
-# utilities
-def _kwargs_get(key, kwargs, params, default=None):
-    nkey = key.replace('_','-')
-    if kwargs.has_key(key):
-        params[nkey] = kwargs[key]
-    elif default != None:
-        params[nkey] = default
 
 class RadosGWS3Connection(boto.s3.connection.S3Connection):
     """S3 connection to a RADOS Gateway (radosgw)"""
@@ -70,7 +63,7 @@ class RadosGWS3Connection(boto.s3.connection.S3Connection):
 
 class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
     """CEPH RADOS Gateway (radosgw) admin operations connection.
-    @see http://ceph.com/docs/next/radosgw/adminops/
+    :see: http://ceph.com/docs/next/radosgw/adminops/
     """
     def __init__(self,
                  access_key, secret_key,
@@ -113,7 +106,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :param str method: GET|PUT|HEAD|POST|DELETE|...
         :param str path: admin sub request path (i.e. /user)
         :param dict query_params: url query parameters
-        :returns boto.connection.HttpResponse response: the HTTP response
+        :returns boto.connection.HttpResponse: the HTTP response
         """
         auth_path = path
         if not query_params:
@@ -173,8 +166,6 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
             users.append(user)
         return users
 
-    # uid= UID
-    # format= 'json'
     def get_user(self, uid, **kwargs):
         """Get the user information.
         :param str uid: the user user_id
@@ -287,3 +278,12 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
             bucket = self.get_bucket(bucket=bucket_name)
             buckets.append(bucket)
         return buckets
+
+
+# utilities
+def _kwargs_get(key, kwargs, params, default=None):
+    nkey = key.replace('_','-')
+    if kwargs.has_key(key):
+        params[nkey] = kwargs[key]
+    elif default != None:
+        params[nkey] = default

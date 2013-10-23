@@ -26,39 +26,6 @@ from radosgw.user import UserInfo
 from radosgw.bucket import BucketInfo
 
 
-class RadosGWS3Connection(boto.s3.connection.S3Connection):
-    """S3 connection to a RADOS Gateway (radosgw)"""
-    def __init__(self,
-                 access_key, secret_key,
-                 host,
-                 calling_format='boto.s3.connection.OrdinaryCallingFormat',
-                 is_secure=True, port=None, proxy=None, proxy_port=None,
-                 proxy_user=None, proxy_pass=None,
-                 debug=0, https_connection_factory=None,
-                 path='/',
-                 bucket_class=boto.s3.bucket.Bucket, security_token=None,
-                 suppress_consec_slashes=True, anon=False,
-                 validate_certs=None):
-        boto.s3.connection.S3Connection.__init__(self,
-                                                 aws_access_key_id=access_key,
-                                                 aws_secret_access_key=secret_key,
-                                                 host=host,
-                                                 port=port,
-                                                 is_secure=is_secure,
-                                                 proxy=proxy,
-                                                 proxy_port=proxy_port,
-                                                 proxy_user=proxy_user,
-                                                 proxy_pass=proxy_pass,
-                                                 debug=debug,
-                                                 https_connection_factory=https_connection_factory,
-                                                 calling_format=calling_format,
-                                                 path=path,
-                                                 provider='aws',
-                                                 bucket_class=bucket_class,
-                                                 security_token=security_token,
-                                                 suppress_consec_slashes=suppress_consec_slashes,
-                                                 anon=anon,
-                                                 validate_certs=validate_certs)
 
 
 class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
@@ -168,9 +135,9 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
 
     def get_user(self, uid, **kwargs):
         """Get the user information.
-        :param str uid: the user user_id
-        :returns 'radosgw.user.UserInfo': the user info
-        :throws 'radosgw.exception.RadosGWAdminError': if an error occurs
+        :param str uid: the user id
+        :returns radosgw.user.UserInfo: the user info
+        :throws radosgw.exception.RadosGWAdminError: if an error occurs
         :see: http://ceph.com/docs/next/radosgw/adminops/#get-user-info
         """
         # mandatory query parameters
@@ -189,19 +156,32 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
     # access_key= None, secret_key= None, user_caps= None, generate_key= True,
     # max_buckets= None, suspended= False, format= 'json'
     def create_user(self, uid, display_name, **kwargs):
-        """
-        http://ceph.com/docs/next/radosgw/adminops/#create-user
+        """Creates a new user.
+        :param str uid: the user id
+        :param str display_name: the display name
+        :param str email: the user email
+        :param str key_type: the key_type 's3' or 'swift'. Default: 's3'
+        :param str access_key: the access key
+        :param str secret_key: the secret key
+        :param bool generate_key: True to auto generate a new key pair. Default: True
+        :param str user_caps: the user caps. i.e. "user=read; usage=read,write"
+        :param int max_bucket: max bucket for the user. Default: 1000
+        :param bool suspended: to suspend a user
+        :return radosgw.user.UserInfo: the created user
+        :see: http://ceph.com/docs/next/radosgw/adminops/#create-user
         """
         # mandatory query parameters
         params = {'uid': uid, 'display-name': display_name}
         # optional query parameters
-        _kwargs_get('format', kwargs, params, 'json')
         _kwargs_get('email', kwargs, params)
         _kwargs_get('key_type', kwargs, params, 's3')
         _kwargs_get('access_key', kwargs, params)
         _kwargs_get('secret_key', kwargs, params)
         _kwargs_get('user_caps', kwargs, params)
         _kwargs_get('generate_key', kwargs, params, True)
+        _kwargs_get('max_bucket', kwargs, params)
+        _kwargs_get('suspended', kwargs, params)
+        _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('PUT', path='/user', query_params=params)
         body = self._process_response(response)
         user_dict = json.loads(body)
@@ -214,8 +194,19 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
     # access_key= None, secret_key= None, user_caps= None, generate_key= False,
     # max_buckets= None, suspended= False, format= 'json'
     def update_user(self, uid, **kwargs):
-        """
-        http://ceph.com/docs/next/radosgw/adminops/#modify-user
+        """Update an existing user.
+        :param str uid: the user id
+        :param str display_name: the display name
+        :param str email: the user email
+        :param str key_type: the key_type 's3' or 'swift'. Default: 's3'
+        :param str access_key: the access key
+        :param str secret_key: the secret key
+        :param bool generate_key: True to auto generate a new key pair. Default: True
+        :param str user_caps: the user caps. i.e. "user=read; usage=read,write"
+        :param int max_bucket: max bucket for the user. Default: 1000
+        :param bool suspended: to suspend a user
+        :return radosgw.user.UserInfo: the updated user        
+        :see: http://ceph.com/docs/next/radosgw/adminops/#modify-user
         """
         params = {'uid': uid}
         # optional query parameters
@@ -226,6 +217,8 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         _kwargs_get('secret_key', kwargs, params)
         _kwargs_get('user_caps', kwargs, params)
         _kwargs_get('generate_key', kwargs, params, False)
+        _kwargs_get('max_bucket', kwargs, params)
+        _kwargs_get('suspended', kwargs, params)
         _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('POST', path='/user', query_params=params)
         body = self._process_response(response)
@@ -262,6 +255,8 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
 
     def get_buckets(self, uid=None, **kwargs):
         """Get all, or user specific, buckets information.
+        :param str uid: the user id
+        :returns list: the list of buckets information
         :see: http://ceph.com/docs/next/radosgw/adminops/#get-bucket-info
         """
         params = {}
@@ -279,6 +274,40 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
             buckets.append(bucket)
         return buckets
 
+
+class RadosGWS3Connection(boto.s3.connection.S3Connection):
+    """S3 connection to a RADOS Gateway (radosgw)"""
+    def __init__(self,
+                 access_key, secret_key,
+                 host,
+                 calling_format='boto.s3.connection.OrdinaryCallingFormat',
+                 is_secure=True, port=None, proxy=None, proxy_port=None,
+                 proxy_user=None, proxy_pass=None,
+                 debug=0, https_connection_factory=None,
+                 path='/',
+                 bucket_class=boto.s3.bucket.Bucket, security_token=None,
+                 suppress_consec_slashes=True, anon=False,
+                 validate_certs=None):
+        boto.s3.connection.S3Connection.__init__(self,
+                                                 aws_access_key_id=access_key,
+                                                 aws_secret_access_key=secret_key,
+                                                 host=host,
+                                                 port=port,
+                                                 is_secure=is_secure,
+                                                 proxy=proxy,
+                                                 proxy_port=proxy_port,
+                                                 proxy_user=proxy_user,
+                                                 proxy_pass=proxy_pass,
+                                                 debug=debug,
+                                                 https_connection_factory=https_connection_factory,
+                                                 calling_format=calling_format,
+                                                 path=path,
+                                                 provider='aws',
+                                                 bucket_class=bucket_class,
+                                                 security_token=security_token,
+                                                 suppress_consec_slashes=suppress_consec_slashes,
+                                                 anon=anon,
+                                                 validate_certs=validate_certs)
 
 # utilities
 def _kwargs_get(key, kwargs, params, default=None):

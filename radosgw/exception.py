@@ -50,7 +50,7 @@ def factory(status, reason, body=None, *args):
     if body:
         error = json.loads(body)
         code = error['Code']
-        exception_class= boto.utils.find_class(__name__, code)
+        exception_class = boto.utils.find_class(__name__, code)
         if exception_class:
             exception = exception_class(status, reason, body, args)
         else:

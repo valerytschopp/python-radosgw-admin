@@ -18,35 +18,36 @@
 """Ceph RADOS Gateway Bucket Information."""
 
 class BucketInfo(object):
-    """RADOS Gateway Bucket Info"""
+    """Ceph RADOS Gateway Bucket Info"""
 
 # {
-#    "bucket": "blub", 
-#    "id": "79826.5", 
-#    "index_pool": ".rgw.buckets", 
-#    "marker": "79826.5", 
-#    "master_ver": 0, 
-#    "max_marker": "", 
-#    "mtime": 0, 
-#    "owner": "fischer", 
-#    "pool": ".rgw.buckets", 
+#    "bucket": "example_bucket",
+#    "id": "79826.5",
+#    "index_pool": ".rgw.buckets",
+#    "marker": "79826.5",
+#    "master_ver": 0,
+#    "max_marker": "",
+#    "mtime": 0,
+#    "owner": "example_user",
+#    "pool": ".rgw.buckets",
 #    "usage": {
 #        "rgw.main": {
-#            "num_objects": 1, 
-#            "size_kb": 147, 
+#            "num_objects": 1,
+#            "size_kb": 147,
 #            "size_kb_actual": 148
 #        }
-#    }, 
+#    },
 #    "ver": 0
 #}
 
-    def __init__(self,radosgw_connection,bucket_dict):
-        self._connection= radosgw_connection
+    def __init__(self, radosgw_admin, bucket_dict):
+        """INTERNAL ONLY."""
+        self._rgwadmin = radosgw_admin
         for key in bucket_dict:
             self.__setattr__(key.lower(), bucket_dict[key])
-        
+
     def __str__(self):
-        return "<BucketInfo: %s>" % self.bucket    
-    
+        return "<BucketInfo: %s>" % self.bucket
+
     def __repr__(self):
         return "<BucketInfo: %s>" % self.bucket

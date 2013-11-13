@@ -25,9 +25,6 @@ import radosgw.exception
 from radosgw.user import UserInfo
 from radosgw.bucket import BucketInfo
 
-
-
-
 class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
     """CEPH RADOS Gateway (radosgw) admin operations connection.
     :see: http://ceph.com/docs/next/radosgw/adminops/
@@ -58,6 +55,10 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
                                                    security_token=security_token,
                                                    suppress_consec_slashes=True,
                                                    validate_certs=validate_certs)
+
+    def __repr__(self):
+        return '<%s:%s>' % (self.__class__.__name__, self.host)
+
 
     def get_admin_path(self):
         """Returns the admin query path prefix."""

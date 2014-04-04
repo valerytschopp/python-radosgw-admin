@@ -18,6 +18,7 @@
 """Ceph RADOS Gateway (radosgw) S3 and admin operations."""
 
 __version__ = '1.0'
+__author__ = 'valery.tshopp@switch.ch'
 
 def get_version():
     """ Return the current version"""

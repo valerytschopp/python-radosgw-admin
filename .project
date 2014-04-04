@@ -3,6 +3,8 @@
 	<name>python-radosgw-admin</name>
 	<comment></comment>
 	<projects>
+		<project>boto</project>
+		<project>python-keystoneclient</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -21,6 +21,8 @@ Create or modify a user in radosgw with the following capabilities (caps):
           "perm": "*"},
         { "type": "usage",
           "perm": "*"},
+        { "type": "metadata",
+          "perm": "read"},
         { "type": "users",
           "perm": "*"}
     ]

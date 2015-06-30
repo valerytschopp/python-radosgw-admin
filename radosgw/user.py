@@ -107,10 +107,10 @@ class UserInfo(object):
         return self.user_id
 
     def __str__(self):
-        return "UserInfo: %s" % self.user_id
+        return "<User: %s>" % self.user_id
 
     def __repr__(self):
-        return "<UserInfo: %s '%s'>" % (self.user_id, self.display_name)
+        return "<User: %s '%s'>" % (self.user_id, self.display_name)
 
     # display_name= None
     # email= None

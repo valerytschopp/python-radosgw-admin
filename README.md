@@ -12,6 +12,20 @@ http://ceph.com/docs/master/radosgw/adminops/
 
     python setup.py install
 
+## Configuration of the admin user
+
+Create or modify a user in radosgw with the following capabilities (caps):
+
+    "caps": [
+        { "type": "buckets",
+          "perm": "*"},
+        { "type": "usage",
+          "perm": "*"},
+        { "type": "users",
+          "perm": "*"}
+    ]
+
+You can use `radosgw-admin caps add --uid <USER_ID> --caps "buckets=read,write"` to add capabilities to an existing user.
 
 ## Example
 

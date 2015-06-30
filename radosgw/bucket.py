@@ -46,8 +46,13 @@ class BucketInfo(object):
         for key in bucket_dict:
             self.__setattr__(key.lower(), bucket_dict[key])
 
+    @property
+    def name(self):
+        return self.bucket
+
     def __str__(self):
-        return "<BucketInfo: %s>" % self.bucket
+        return "<Bucket: %s>" % self.name
 
     def __repr__(self):
-        return "<BucketInfo: %s>" % self.bucket
+        return "<Bucket: %s>" % self.name
+

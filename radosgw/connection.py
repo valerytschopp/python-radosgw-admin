@@ -275,41 +275,6 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
             buckets.append(bucket)
         return buckets
 
-
-class RadosGWS3Connection(boto.s3.connection.S3Connection):
-    """S3 connection to a RADOS Gateway (radosgw)"""
-    def __init__(self,
-                 access_key, secret_key,
-                 host,
-                 calling_format='boto.s3.connection.OrdinaryCallingFormat',
-                 is_secure=True, port=None, proxy=None, proxy_port=None,
-                 proxy_user=None, proxy_pass=None,
-                 debug=0, https_connection_factory=None,
-                 path='/',
-                 bucket_class=boto.s3.bucket.Bucket, security_token=None,
-                 suppress_consec_slashes=True, anon=False,
-                 validate_certs=None):
-        boto.s3.connection.S3Connection.__init__(self,
-                                                 aws_access_key_id=access_key,
-                                                 aws_secret_access_key=secret_key,
-                                                 host=host,
-                                                 port=port,
-                                                 is_secure=is_secure,
-                                                 proxy=proxy,
-                                                 proxy_port=proxy_port,
-                                                 proxy_user=proxy_user,
-                                                 proxy_pass=proxy_pass,
-                                                 debug=debug,
-                                                 https_connection_factory=https_connection_factory,
-                                                 calling_format=calling_format,
-                                                 path=path,
-                                                 provider='aws',
-                                                 bucket_class=bucket_class,
-                                                 security_token=security_token,
-                                                 suppress_consec_slashes=suppress_consec_slashes,
-                                                 anon=anon,
-                                                 validate_certs=validate_certs)
-
 # utilities
 def _kwargs_get(key, kwargs, params, default=None):
     nkey = key.replace('_','-')

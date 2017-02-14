@@ -20,6 +20,10 @@
 __version__ = '1.1'
 __author__ = 'valery.tshopp@switch.ch'
 
+import radosgw.connection
+import radosgw.exception
+import radosgw.utils
+
 def get_version():
     """ Return the current version"""
     return __version__

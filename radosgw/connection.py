@@ -207,7 +207,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :param str user_caps: the user caps. i.e. "user=read; usage=read,write"
         :param int max_bucket: max bucket for the user. Default: 1000
         :param bool suspended: to suspend a user
-        :return radosgw.user.UserInfo: the updated user        
+        :return radosgw.user.UserInfo: the updated user
         :see: http://ceph.com/docs/next/radosgw/adminops/#modify-user
         """
         params = {'uid': uid}
@@ -280,7 +280,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
 
 # utilities
 def _kwargs_get(key, kwargs, params, default=None):
-    nkey = key.replace('_','-')
+    nkey = key.replace('_', '-')
     if kwargs.has_key(key):
         params[nkey] = kwargs[key]
     elif default != None:

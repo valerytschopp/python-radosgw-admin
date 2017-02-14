@@ -15,24 +15,26 @@
 #
 # @author: Valery Tschopp <valery.tshopp@switch.ch>
 
+"""Utilities"""
+
 import os
 
 def get_access_key(default=None):
-    """Get the S3 access key from env[AWS_ACCESS_KEY_ID], env[EC2_ACCESS_KEY] or default""" 
+    """Get the S3 access key from env[AWS_ACCESS_KEY_ID], env[EC2_ACCESS_KEY] or default"""
     if 'AWS_ACCESS_KEY_ID' in os.environ:
-        access_key= os.environ['AWS_ACCESS_KEY_ID']
+        access_key = os.environ['AWS_ACCESS_KEY_ID']
     elif 'EC2_ACCESS_KEY' in os.environ:
-        access_key= os.environ['EC2_ACCESS_KEY']
+        access_key = os.environ['EC2_ACCESS_KEY']
     else:
-        access_key = default        
+        access_key = default
     return access_key
 
 def get_secret_key(default=None):
-    """Get the S3 secret key from env[AWS_SECRET_ACCESS_KEY], env[EC2_SECRET_KEY] or default""" 
+    """Get the S3 secret key from env[AWS_SECRET_ACCESS_KEY], env[EC2_SECRET_KEY] or default"""
     if 'AWS_SECRET_ACCESS_KEY' in os.environ:
-        secret_key= os.environ['AWS_SECRET_ACCESS_KEY']
+        secret_key = os.environ['AWS_SECRET_ACCESS_KEY']
     elif 'EC2_SECRET_KEY' in os.environ:
-        secret_key= os.environ['EC2_SECRET_KEY']
+        secret_key = os.environ['EC2_SECRET_KEY']
     else:
         secret_key = default
     return secret_key

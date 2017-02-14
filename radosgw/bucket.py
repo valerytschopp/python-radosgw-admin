@@ -45,7 +45,7 @@ class BucketInfo(object):
         self._rgwadmin = radosgw_admin
         self._object = bucket_dict
         for key in bucket_dict:
-            self.__setattr__(key.lower(), bucket_dict[key])
+            setattr(self, key.lower(), bucket_dict[key])
 
     @property
     def name(self):
@@ -56,7 +56,7 @@ class BucketInfo(object):
         return self._usage
 
     @usage.setter
-    def usage(self,value):
+    def usage(self, value):
         if 'rgw.main' in value:
             self._usage = Usage(value['rgw.main'])
         else:
@@ -79,10 +79,12 @@ class Usage(object):
     def __init__(self, usage_dict):
         self._object = usage_dict
         for key in usage_dict:
-            self.__setattr__(key.lower(), usage_dict[key])
+            setattr(self, key.lower(), usage_dict[key])
 
     def __repr__(self):
-        return "<Usage: num_objects={} size_kb={} size_kb_actual={}>".format(self.num_objects, self.size_kb, self.size_kb_actual)
+        return "<Usage: num_objects={} size_kb={} size_kb_actual={}>".format(self.num_objects,
+                                                                             self.size_kb,
+                                                                             self.size_kb_actual)
 
     @property
     def object(self):

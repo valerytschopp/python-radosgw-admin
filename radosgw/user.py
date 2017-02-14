@@ -80,7 +80,9 @@ class UserInfo(object):
                 key_dict = key
             else:
                 key_dict = key.__dict__
-            s3key = Key(key_dict['user'], key_dict['access_key'], key_dict['secret_key'], 's3')
+            s3key = Key(key_dict['user'],
+                        key_dict['access_key'], key_dict['secret_key'],
+                        's3')
             self.keys.append(s3key)
         # swift_keys
         self.swift_keys = []
@@ -90,7 +92,9 @@ class UserInfo(object):
                 key_dict = key
             else:
                 key_dict = key.__dict__
-            swiftkey = Key(key_dict['user'], key_dict['access_key'], key_dict['secret_key'], 'swift')
+            swiftkey = Key(key_dict['user'],
+                           key_dict['access_key'], key_dict['secret_key'],
+                           'swift')
             self.swift_keys.append(swiftkey)
         # caps
         self.caps = []
@@ -152,6 +156,7 @@ class UserInfo(object):
         buckets = self._rgwadmin.get_buckets(uid=self.user_id)
         return buckets
 
+
 class Key(object):
     """RADOS Gateway User key"""
     def __init__(self, user_id, access_key, secret_key, key_type='s3'):
@@ -162,14 +167,13 @@ class Key(object):
 
     def __repr__(self):
         return '<Key %s: %s: %s %s>' % (self.key_type, self.user, self.access_key, self.secret_key)
-    
+
 
 class Cap(object):
     """RADOS Gateway User capability"""
-    
     def __init__(self, cap_type, cap_perm):
         self.type = cap_type
         self.perm = cap_perm
-        
+
     def __repr__(self):
         return '<Capability: %s=%s>' % (self.type, self.perm)

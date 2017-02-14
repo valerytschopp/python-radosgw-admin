@@ -53,6 +53,7 @@ class UserInfo(object):
         :see: radosgw.connection.RadosGWAdminConnection#create_user
         """
         self._rgwadmin = radosgw_admin
+        self._object = user_dict
         self._update_from_user(user_dict)
 
     def _update_from_user(self, user):
@@ -106,8 +107,6 @@ class UserInfo(object):
     def id(self):
         return self.user_id
 
-    def __str__(self):
-        return "<User: %s>" % self.user_id
 
     def __repr__(self):
         return "<User: %s '%s'>" % (self.user_id, self.display_name)
@@ -161,12 +160,10 @@ class Key(object):
         self.secret_key = secret_key
         self.key_type = key_type
 
-    def __str__(self):
-        return 'Key %s: %s: %s %s' % (self.key_type, self.user, self.access_key, self.secret_key)
-    
     def __repr__(self):
-        return '<Key %s>' % self.access_key
+        return '<Key %s: %s: %s %s>' % (self.key_type, self.user, self.access_key, self.secret_key)
     
+
 class Cap(object):
     """RADOS Gateway User capability"""
     
@@ -174,5 +171,5 @@ class Cap(object):
         self.type = cap_type
         self.perm = cap_perm
         
-    def __str__(self):
-        return 'Capability: %s=%s' % (self.type, self.perm)
+    def __repr__(self):
+        return '<Capability: %s=%s>' % (self.type, self.perm)

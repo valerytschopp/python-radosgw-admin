@@ -25,13 +25,14 @@ import radosgw.exception
 from radosgw.user import UserInfo
 from radosgw.bucket import BucketInfo
 
+
 class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
-    """CEPH RADOS Gateway (radosgw) admin operations connection.
+    """Ceph RADOS Gateway (radosgw) admin operations connection.
     :see: http://ceph.com/docs/next/radosgw/adminops/
     """
     def __init__(self,
-                 access_key, secret_key,
                  host,
+                 access_key, secret_key,
                  admin_path='/admin',
                  is_secure=True, port=None,
                  proxy=None, proxy_port=None, proxy_user=None, proxy_pass=None,
@@ -240,7 +241,9 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         return self._process_response(response) is None
 
     def get_bucket(self, bucket, **kwargs):
-        """
+        """Get a bucket information.
+        :param str bucket: the bucket name
+        :returns BucketInfo:
         :see: http://ceph.com/docs/next/radosgw/adminops/#get-bucket-info
         """
         params = {'bucket': bucket}

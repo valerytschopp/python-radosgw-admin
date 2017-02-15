@@ -15,7 +15,7 @@ if sys.argv[-1] == 'publish':
 
 setup(
     name='radosgw-admin',
-    version='1.1.0',
+    version='1.1.1',
     author='Valery Tschopp',
     author_email='valery.tschopp@gmail.com',
     include_package_data=True,

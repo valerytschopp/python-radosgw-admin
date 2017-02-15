@@ -9,13 +9,9 @@ try:
 except ImportError:
     from distutils.core import setup
 
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    sys.exit()
-
 setup(
     name='radosgw-admin',
-    version='1.1.1',
+    version='1.1.2rc0',
     author='Valery Tschopp',
     author_email='valery.tschopp@gmail.com',
     include_package_data=True,

@@ -29,13 +29,13 @@ Create or modify a user/bucket in radosgw with the following capabilities (caps)
 
   "caps": [
      { "type": "buckets",
-       "perm": "*"},
+       "perm": "*" },
      { "type": "usage",
-       "perm": "read"},
+       "perm": "read" },
      { "type": "metadata",
-       "perm": "read"},
+       "perm": "read" },
      { "type": "users",
-       "perm": "*"}
+       "perm": "*" }
   ]
 
 You can use the ``radosgw-admin`` command to add capabilities to an existing user::

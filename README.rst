@@ -47,5 +47,4 @@ You can use the ``radosgw-admin`` command to add capabilities to an existing use
 Example
 -------
 
-See the example in [examples/radosgw-admin-example.py](https://github.com/valerytschopp/python-radosgw-admin/blob/master/examples/radosgw-admin-example.py)
-
+See the example in `examples/radosgw-admin-example.py <https://github.com/valerytschopp/python-radosgw-admin/blob/master/examples/radosgw-admin-example.py>`_

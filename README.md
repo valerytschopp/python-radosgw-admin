@@ -31,5 +31,5 @@ You can use `radosgw-admin caps add --uid <USER_ID> --caps "buckets=read,write"`
 
 ## Example
 
-TODO
+See the example in [examples/radosgw-admin-example.py](https://github.com/valerytschopp/python-radosgw-admin/blob/master/examples/radosgw-admin-example.py)
 

@@ -76,7 +76,7 @@ import radosgw
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-H', '--hostname', help='S3 hostname', required=True)
+    parser.add_argument('-H', '--hostname', help='radosgw hostname', required=True)
     parser.add_argument('-a', '--access-key', help='S3 access key', required=True)
     parser.add_argument('-s', '--secret-key', help='S3 secret key', required=True)
     parser.add_argument('-v', '--verbose', help='verbose', action='store_true')

@@ -13,11 +13,11 @@ Requirement
 Installation
 ------------
 
-To install the package use ``pip``::
+The package is available on https://pypi.python.org/pypi/radosgw-admin. To install it use ``pip``::
 
   pip install radosgw-admin
 
-Or install directly with::
+Or clone this repository and install it locally::
 
   python setup.py install
 

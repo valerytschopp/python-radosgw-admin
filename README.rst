@@ -17,6 +17,11 @@ To install the package use ``pip``::
 
   pip install radosgw-admin
 
+Or install directly with::
+
+  python setup.py install
+
+
 Configuration of the admin user
 -------------------------------
 

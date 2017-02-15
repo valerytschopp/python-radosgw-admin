@@ -11,7 +11,7 @@ except ImportError:
 
 setup(
     name='radosgw-admin',
-    version='1.1.2rc0',
+    version='1.1.2',
     author='Valery Tschopp',
     author_email='valery.tschopp@gmail.com',
     include_package_data=True,
@@ -21,6 +21,6 @@ setup(
     url='https://github.com/valerytschopp/python-radosgw-admin',
     license='Apache2',
     description='Ceph RADOS Gateway admin operations REST API',
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     #test_suite='tests'
 )

@@ -9,24 +9,21 @@ try:
 except ImportError:
     from distutils.core import setup
 
-from radosgw import __version__, __author__
-
-
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist upload')
     sys.exit()
 
 setup(
     name='radosgw-admin',
-    version=__version__,
+    version='1.1.0',
     author='Valery Tschopp',
-    author_email=__author__,
+    author_email='valery.tschopp@gmail.com',
     include_package_data=True,
     requires=['boto'],
     install_requires=['boto'],
     packages=['radosgw'],
     url='https://github.com/valerytschopp/python-radosgw-admin',
-    license='Apache2, see LICENCE',
+    license='Apache2',
     description='Ceph RADOS Gateway admin operations REST API',
     long_description=open('README.md').read(),
     #test_suite='tests'

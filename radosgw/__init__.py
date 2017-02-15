@@ -13,17 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# @author: Valery Tschopp <valery.tshopp@switch.ch>
+# author: Valery Tschopp <valery.tshopp@switch.ch>
 
-"""Ceph RADOS Gateway (radosgw) S3 and admin operations."""
-
-__version__ = '1.1.0'
-__author__ = 'valery.tshopp@switch.ch'
-
-import radosgw.connection
 import radosgw.exception
+import radosgw.connection
 import radosgw.utils
-
-def get_version():
-    """ Return the current version"""
-    return __version__

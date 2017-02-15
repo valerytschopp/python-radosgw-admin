@@ -25,7 +25,7 @@ Or clone this `repository <https://github.com/valerytschopp/python-radosgw-admin
 Configuration of the admin user
 -------------------------------
 
-To create or modify a bucket/user in radosgw, the user require the following ``read,write``capabilities (caps)::
+To create or modify a bucket/user in radosgw, the user require the following ``read,write`` capabilities (caps)::
 
   "caps": [
      { "type": "buckets",

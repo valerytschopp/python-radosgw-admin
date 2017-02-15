@@ -1,1 +1,1 @@
-include README.md LICENSE
+include README.rst LICENSE examples/radosgw-admin-example.py

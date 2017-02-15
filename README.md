@@ -14,20 +14,23 @@ http://ceph.com/docs/master/radosgw/adminops/
 
 ## Configuration of the admin user
 
-Create or modify a user in radosgw with the following capabilities (caps):
+Create or modify a user/bucket in radosgw with the following capabilities (caps):
 
     "caps": [
         { "type": "buckets",
           "perm": "*"},
         { "type": "usage",
-          "perm": "*"},
+          "perm": "read"},
         { "type": "metadata",
           "perm": "read"},
         { "type": "users",
           "perm": "*"}
     ]
 
-You can use `radosgw-admin caps add --uid <USER_ID> --caps "buckets=read,write"` to add capabilities to an existing user.
+You can use `radosgw-admin` to add capabilities to an existing user:
+
+     radosgw-admin caps add --uid <USER_ID> --caps "buckets=read,write"
+     radosgw-admin caps add --uid <USER_ID> --caps "users=read,write"
 
 ## Example
 

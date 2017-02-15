@@ -17,7 +17,7 @@ The package is available on https://pypi.python.org/pypi/radosgw-admin. To insta
 
   pip install radosgw-admin
 
-Or clone this repository and install it locally::
+Or clone this `repository <https://github.com/valerytschopp/python-radosgw-admin>`_ and install it locally::
 
   python setup.py install
 

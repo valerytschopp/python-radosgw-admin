@@ -17,6 +17,7 @@
 """Connections to a Ceph RADOS Gateway (radosgw) service."""
 import json
 import urllib
+
 import boto.connection
 import boto.s3.bucket
 import boto.s3.connection
@@ -27,13 +28,14 @@ from radosgw.bucket import BucketInfo
 
 
 class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
-    """Ceph RADOS Gateway (radosgw) admin operations connection.
+    """Ceph RADOS Gateway (radosgw) admin connection.
     :see: http://ceph.com/docs/next/radosgw/adminops/
     """
     def __init__(self,
                  host,
                  access_key, secret_key,
                  admin_path='/admin',
+                 timeout=30,
                  is_secure=True, port=None,
                  proxy=None, proxy_port=None, proxy_user=None, proxy_pass=None,
                  debug=0,
@@ -42,6 +44,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         """Constructor."""
 
         self.admin_path = admin_path
+        # init AWS connection
         boto.connection.AWSAuthConnection.__init__(self,
                                                    host=host,
                                                    aws_access_key_id=access_key,
@@ -56,6 +59,8 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
                                                    security_token=security_token,
                                                    suppress_consec_slashes=True,
                                                    validate_certs=validate_certs)
+        # set http_socket_timeout
+        self.http_connection_kwargs['timeout'] = timeout
 
     def __repr__(self):
         return '<%s:%s>' % (self.__class__.__name__, self.host)
@@ -70,7 +75,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         return ['hmac-v1']
 
     def make_request(self, method, path, query_params=None, headers=None, data='', host=None,
-                     sender=None, override_num_retries=None, retry_handler=None):
+                     sender=None, override_num_retries=3, retry_handler=None):
         """Makes a request to the RADOS GW admin server.
         :param str method: GET|PUT|HEAD|POST|DELETE|...
         :param str path: admin sub request path (i.e. /user)

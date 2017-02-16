@@ -13,11 +13,11 @@ Requirement
 Installation
 ------------
 
-To install the package use ``pip``::
+The package is available on https://pypi.python.org/pypi/radosgw-admin. To install it use ``pip``::
 
   pip install radosgw-admin
 
-Or install directly with::
+Or clone this `repository <https://github.com/valerytschopp/python-radosgw-admin>`_ and install it locally::
 
   python setup.py install
 
@@ -25,7 +25,7 @@ Or install directly with::
 Configuration of the admin user
 -------------------------------
 
-Create or modify a user/bucket in radosgw with the following capabilities (caps)::
+To create or modify a bucket/user in radosgw, the user require the following ``read,write`` capabilities (caps)::
 
   "caps": [
      { "type": "buckets",

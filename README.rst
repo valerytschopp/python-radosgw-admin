@@ -3,7 +3,7 @@ python-radosgw-admin
 
 Python REST API for the Ceph RADOS Gateway (radosgw) admin operations
 
-http://ceph.com/docs/master/radosgw/adminops/
+http://docs.ceph.com/docs/master/radosgw/adminops/
 
 Requirement
 -----------

@@ -18,6 +18,7 @@ import json
 import urllib
 from itertools import izip
 
+import boto
 import boto.connection
 import boto.s3.bucket
 import boto.s3.connection
@@ -38,12 +39,18 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
                  timeout=30,
                  is_secure=True, port=None,
                  proxy=None, proxy_port=None, proxy_user=None, proxy_pass=None,
-                 debug=0,
+                 debug=False,
                  https_connection_factory=None, security_token=None,
                  validate_certs=True):
         """Constructor."""
 
         self.admin_path = admin_path
+        if debug:
+            boto.set_stream_logger('boto')
+            debug_boto = 10
+        else:
+            debug_boto = 0
+
         # init AWS connection
         boto.connection.AWSAuthConnection.__init__(self,
                                                    host=host,
@@ -52,7 +59,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
                                                    is_secure=is_secure, port=port,
                                                    proxy=proxy, proxy_port=proxy_port,
                                                    proxy_user=proxy_user, proxy_pass=proxy_pass,
-                                                   debug=debug,
+                                                   debug=debug_boto,
                                                    https_connection_factory=https_connection_factory,
                                                    path=self.admin_path,
                                                    provider='aws',

@@ -13,10 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# @author: Valery Tschopp <valery.tshopp@switch.ch>
-"""Connections to a Ceph RADOS Gateway (radosgw) service."""
+# author: Valery Tschopp <valery.tschopp@switch.ch>
 import json
 import urllib
+from itertools import izip
 
 import boto.connection
 import boto.s3.bucket
@@ -64,7 +64,6 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
 
     def __repr__(self):
         return '<%s:%s>' % (self.__class__.__name__, self.host)
-
 
     def get_admin_path(self):
         """Returns the admin query path prefix."""
@@ -258,7 +257,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         response = self.make_request('GET', path='/bucket', query_params=params)
         body = self._process_response(response)
         bucket_dict = json.loads(body)
-        #print json.dumps(bucket_dict, indent=4, sort_keys=True)
+        # XXX: print(json.dumps(bucket_dict, indent=4, sort_keys=True))
         bucket = BucketInfo(self, bucket_dict)
         return bucket
 
@@ -268,25 +267,33 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :returns list: the list of buckets information
         :see: http://ceph.com/docs/next/radosgw/adminops/#get-bucket-info
         """
-        params = {}
+        params = {'stats': True}
         if uid:
             params = {'uid': uid}
         # optional query parameters
         _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('GET', path='/bucket', query_params=params)
         body = self._process_response(response)
-        bucket_names = json.loads(body)
+        buckets_name_and_dict = json.loads(body)
+        # XXX: print(json.dumps(buckets_name_and_dict, indent=4, sort_keys=True))
         buckets = []
-        for bucket_name in bucket_names:
+        for bucket_name, bucket_dict in _pairwise(buckets_name_and_dict):
             boto.log.debug('bucket_name: %s' % bucket_name)
-            bucket = self.get_bucket(bucket=bucket_name)
+            bucket = BucketInfo(self, bucket_dict)
             buckets.append(bucket)
         return buckets
+
 
 # utilities
 def _kwargs_get(key, kwargs, params, default=None):
     nkey = key.replace('_', '-')
-    if kwargs.has_key(key):
+    if key in kwargs:
         params[nkey] = kwargs[key]
-    elif default != None:
+    elif default is not None:
         params[nkey] = default
+
+
+def _pairwise(iterable):
+    "s -> (s0, s1), (s2, s3), (s4, s5), ..."
+    a = iter(iterable)
+    return izip(a, a)

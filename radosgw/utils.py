@@ -19,6 +19,7 @@
 
 import os
 
+
 def get_access_key(default=None):
     """Get the S3 access key from env[AWS_ACCESS_KEY_ID], env[EC2_ACCESS_KEY] or default"""
     if 'AWS_ACCESS_KEY_ID' in os.environ:
@@ -28,6 +29,7 @@ def get_access_key(default=None):
     else:
         access_key = default
     return access_key
+
 
 def get_secret_key(default=None):
     """Get the S3 secret key from env[AWS_SECRET_ACCESS_KEY], env[EC2_SECRET_KEY] or default"""

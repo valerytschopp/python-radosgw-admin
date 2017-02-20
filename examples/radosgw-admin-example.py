@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# @author: Valery Tschopp <valery.tshopp@switch.ch>
+# author: Valery Tschopp <valery.tschopp@switch.ch>
 
 import argparse
 
@@ -83,9 +83,9 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--debug', help='debug', action='store_true')
     args = parser.parse_args()
 
-    rgwadmin = radosgw.connection.RadosGWAdminConnection(host = args.hostname,
-                                                         access_key = args.access_key,
-                                                         secret_key = args.secret_key)
+    rgwadmin = radosgw.connection.RadosGWAdminConnection(host=args.hostname,
+                                                         access_key=args.access_key,
+                                                         secret_key=args.secret_key)
 
     print "{:*^20}".format('Buckets')
     buckets = rgwadmin.get_buckets()
@@ -95,17 +95,18 @@ if __name__ == '__main__':
     total_num_object = 0
     for bucket in buckets:
         print "{:>3} bucket: {}".format(i, bucket)
-        owner = rgwadmin.get_user(uid=bucket.owner)
-        print "    owner: {}".format(owner)
-        print "    usage: {}".format(bucket.usage)
         if bucket.usage:
+            print "     usage: {}".format(bucket.usage)
             total_size_kb += bucket.usage.size_kb
             total_num_object += bucket.usage.num_objects
         i += 1
     print "Total: {} objects, {} KB".format(total_num_object, total_size_kb)
 
     print "{:*^20}".format('Users')
+    # WARNING: get_users is very slow !!!
+    #          one callout per user
     users = rgwadmin.get_users()
+    print "{:>3} users".format(len(users))
     for user in users:
         print "user:", user
         for key in user.keys:

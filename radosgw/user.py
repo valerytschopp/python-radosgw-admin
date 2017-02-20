@@ -15,11 +15,6 @@
 #
 # @author: Valery Tschopp <valery.tshopp@switch.ch>
 
-"""Ceph RADOS Gateway User Information."""
-
-class UserInfo(object):
-    """RADOS Gateway User Info"""
-
 # {
 #  "user_id":"test",
 #  "display_name":"Test User",
@@ -46,6 +41,10 @@ class UserInfo(object):
 #      }
 #   ]
 # }
+
+
+class UserInfo(object):
+    """RADOS Gateway User Info"""
 
     def __init__(self, radosgw_admin, user_dict):
         """INTERNAL ONLY.
@@ -110,7 +109,6 @@ class UserInfo(object):
     @property
     def id(self):
         return self.user_id
-
 
     def __repr__(self):
         return "<User: %s '%s'>" % (self.user_id, self.display_name)

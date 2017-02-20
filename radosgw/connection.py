@@ -269,7 +269,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         """
         params = {'stats': True}
         if uid:
-            params = {'uid': uid}
+            params['uid'] = uid
         # optional query parameters
         _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('GET', path='/bucket', query_params=params)
@@ -282,6 +282,23 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
             bucket = BucketInfo(self, bucket_dict)
             buckets.append(bucket)
         return buckets
+
+    def check_bucket_index(self, bucket, check_objects=True, fix=False, **kwargs):
+        """Check the index of an existing bucket.
+        :param bucket:
+        :param check_objects:
+        :param fix:
+        :return:
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#check-bucket-index
+        """
+        params = {'bucket': bucket,
+                  'check-objects': check_objects,
+                  'fix': fix }
+        # optional query parameters
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('GET', path='/bucket?index', query_params=params)
+        body = self._process_response(response)
+        pass
 
 
 # utilities

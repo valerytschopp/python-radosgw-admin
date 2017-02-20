@@ -15,11 +15,6 @@
 #
 # @author: Valery Tschopp <valery.tshopp@switch.ch>
 
-"""Ceph RADOS Gateway Bucket Information."""
-
-class BucketInfo(object):
-    """Ceph RADOS Gateway Bucket Info"""
-
 # {
 #    "bucket": "example_bucket",
 #    "id": "79826.5",
@@ -38,7 +33,11 @@ class BucketInfo(object):
 #        }
 #    },
 #    "ver": 0
-#}
+# }
+
+
+class BucketInfo(object):
+    """Ceph RADOS Gateway Bucket Info"""
 
     def __init__(self, radosgw_admin, bucket_dict):
         """INTERNAL ONLY."""
@@ -62,7 +61,6 @@ class BucketInfo(object):
         else:
             self._usage = None
 
-
     @property
     def object(self):
         return self._object
@@ -72,6 +70,7 @@ class BucketInfo(object):
 
     def __repr__(self):
         return "<Bucket: %s>" % self.name
+
 
 class Usage(object):
     """RADOS Gateway bucket usage"""

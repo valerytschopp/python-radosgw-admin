@@ -21,6 +21,7 @@ import json
 import boto.exception
 import boto.utils
 
+
 class RadosGWAdminError(boto.exception.BotoServerError):
     """Ceph RADOS Gateway admin operation generic error."""
     def __init__(self, status, reason, body=None, *args):
@@ -45,6 +46,7 @@ class RadosGWAdminError(boto.exception.BotoServerError):
     def __str__(self):
         return '%s (%s %s)' % (self.code, self.status, self.reason)
 
+
 def factory(status, reason, body=None, *args):
     """Returns the correct error, based on the error code in the body."""
     if body:
@@ -59,6 +61,7 @@ def factory(status, reason, body=None, *args):
         exception = RadosGWAdminError(status, reason, body, args)
 
     return exception
+
 
 class AccessDenied(RadosGWAdminError):
     """Access was denied for the request."""

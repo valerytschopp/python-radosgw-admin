@@ -269,7 +269,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         """
         params = {'stats': True}
         if uid:
-            params = {'uid': uid}
+            params['uid'] = uid
         # optional query parameters
         _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('GET', path='/bucket', query_params=params)

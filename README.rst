@@ -50,7 +50,7 @@ Examples
 See the example in `examples/radosgw-admin-example.py <https://github.com/valerytschopp/python-radosgw-admin/blob/master/examples/radosgw-admin-example.py>`_
 
 
-Here is a simple example::
+Here is a simple example:: python
 
   import radosgw
 

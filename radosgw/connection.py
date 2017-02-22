@@ -16,7 +16,6 @@
 # author: Valery Tschopp <valery.tschopp@switch.ch>
 import json
 import urllib
-from itertools import izip
 
 import boto
 import boto.connection
@@ -93,7 +92,10 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
             query_params = {}
         else:
             query = urllib.urlencode(query_params)
-            path = path + '?' + query
+            # handle path like /admin/bucket?index&<params>
+            path = "{}{}{}".format(path,
+                                   '&' if '?' in path else '?',
+                                   query)
         http_request = self.build_base_http_request(method, path, auth_path,
                                                     query_params, headers, data, host)
         boto.log.debug('http_request:%s' % http_request)
@@ -298,6 +300,81 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
             buckets.append(bucket)
         return buckets
 
+    def check_bucket_index(self, bucket, check_objects=True, fix=False, **kwargs):
+        """Check the index of an existing bucket.
+        :param bucket:
+        :param check_objects:
+        :param fix:
+        :return: nothing
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#check-bucket-index
+        """
+        params = {'bucket': bucket,
+                  'check-objects': check_objects,
+                  'fix': fix }
+        # optional query parameters
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('GET', path='/bucket?index', query_params=params)
+        body = self._process_response(response)
+
+    def delete_bucket(self, bucket_name, purge_objects=True, **kwargs):
+        """Delete an existing bucket.
+        :param str bucket_name:
+        :param bool purge_objects:
+        :return: None
+        """
+        params = {'bucket': bucket_name,
+                  'purge-objects': purge_objects }
+        # optional query parameters
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('DELETE', path='/bucket', query_params=params)
+        return self._process_response(response) is None
+
+    def unlink_bucket(self, bucket_name, uid, **kwargs):
+        """Unlink a bucket from a specified user.
+        Primarily useful for changing bucket ownership.
+        :param str bucket_name: name of the bucket to unlink
+        :param str uid: current user id of the bucket
+        :param kwargs:
+        :return: None
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#unlink-bucket
+        """
+        params = {'bucket': bucket_name, 'uid': uid}
+        # optional query parameters
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('POST', path='/bucket', query_params=params)
+        return self._process_response(response) is None
+
+    def link_bucket(self, bucket_name, bucket_id, uid, **kwargs):
+        """Link a bucket to a specified user, unlinking the bucket from any previous user.
+        :param str bucket_name: name of the bucket to link
+        :param str bucket_id: id of the bucket to link
+        :param str uid: user ID to link the bucket to
+        :param kwargs:
+        :return: None
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#link-bucket
+        """
+        params = {'bucket': bucket_name, 'bucket-id': bucket_id, 'uid': uid}
+        # optional query parameters
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('PUT', path='/bucket', query_params=params)
+        body = self._process_response(response)
+        return self._process_response(response) is None
+
+
+    def remove_object(self, bucket_name, object_name, **kwargs):
+        """Remove an existing object from a bucket.
+        :param str bucket_name:
+        :param str object_name:
+        :param kwargs:
+        :return: None
+        """
+        params = {'bucket': bucket_name,
+                  'object': object_name }
+        # optional query parameters
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('DELETE', path='/bucket?object', query_params=params)
+        return self._process_response(response) is None
+
 
 # utilities
 def _kwargs_get(key, kwargs, params, default=None):
@@ -306,9 +383,3 @@ def _kwargs_get(key, kwargs, params, default=None):
         params[nkey] = kwargs[key]
     elif default is not None:
         params[nkey] = default
-
-
-def _pairwise(iterable):
-    "s -> (s0, s1), (s2, s3), (s4, s5), ..."
-    a = iter(iterable)
-    return izip(a, a)

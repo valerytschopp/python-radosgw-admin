@@ -25,7 +25,7 @@ Or clone this `repository <https://github.com/valerytschopp/python-radosgw-admin
 Configuration of the admin user
 -------------------------------
 
-To create or modify a bucket/user in radosgw, the user require the following ``read,write`` capabilities (caps)::
+To create or modify a bucket/user in radosgw, the admin user require the following ``read,write`` capabilities (caps)::
 
   "caps": [
      { "type": "buckets",
@@ -44,7 +44,35 @@ You can use the ``radosgw-admin`` command to add capabilities to an existing use
   radosgw-admin caps add --uid <USER_ID> --caps "users=read,write"
 
 
-Example
--------
+Examples
+--------
 
 See the example in `examples/radosgw-admin-example.py <https://github.com/valerytschopp/python-radosgw-admin/blob/master/examples/radosgw-admin-example.py>`_
+
+
+Here is a simple example::
+
+  import radosgw
+
+  rgwadmin = radosgw.connection.RadosGWAdminConnection(host='hostname.example.org',
+                                                       access_key='<ADMIN_ACCESS_KEY>',
+                                                       secret_key='<ADMIN_SECRET_KEY>')
+  # user operations
+  testuser2 = rgwadmin.create_user('testuser2',
+                                   display_name='A test user',
+                                   email='testuser2@example.org')
+
+  testuser2.update(display_name='Second test user', suspended=True)
+
+  testuser1 = rgwadmin.get_user('testuser1')
+
+  # bucket operations
+  buckets = rgwadmin.get_buckets()
+  for bucket in buckets:
+      print bucket
+
+  testuser1_buckets = testuser1.get_buckets()
+  for bucket in testuser1_buckets:
+      # transfer buckets to testuser2
+      rgwadmin.link_bucket(bucket.name, bucket.id, testuser2.id)
+

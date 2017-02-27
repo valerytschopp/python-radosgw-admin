@@ -108,6 +108,16 @@ class UserInfo(object):
 
     @property
     def id(self):
+        """DEPRECATED: use the uid property.
+        :return: the user uid
+        """
+        return self.user_id
+
+    @property
+    def uid(self):
+        """Returns the user uid.
+        :return: the user uid
+        """
         return self.user_id
 
     def __repr__(self):

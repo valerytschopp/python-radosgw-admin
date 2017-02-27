@@ -65,13 +65,21 @@ class BucketInfo(object):
     def object(self):
         return self._object
 
+    def check_index(self, check_objects=True, fix=False, **kwargs):
+        """Check the index of the bucket.
+        :param bool check_objects:
+        :param bool fix:
+        :return: nothing
+        """
+        self._rgwadmin.check_bucket_index(self.name, check_objects, fix, **kwargs)
+
     def link(self, uid, **kwargs):
         """Link a bucket to a specified user, unlinking the bucket from any previous user.
         :param str uid: user ID to link the bucket to
         :param kwargs: optional params
         :return: None
         """
-        self._rgwadmin.bucket_link(self.name, self.id, uid, **kwargs)
+        self._rgwadmin.link_bucket(self.name, self.id, uid, **kwargs)
 
     def unlink(self, uid, **kwargs):
         """Unlink a bucket from a specified user.
@@ -80,7 +88,7 @@ class BucketInfo(object):
         :param kwargs: optional params
         :return: None
         """
-        self._rgwadmin.bucket_unlink(uid, **kwargs)
+        self._rgwadmin.unlink_bucket(uid, **kwargs)
 
     def delete(self, purge_objects=True, **kwargs):
         """Delete an existing bucket.

@@ -65,6 +65,39 @@ class BucketInfo(object):
     def object(self):
         return self._object
 
+    def link(self, uid, **kwargs):
+        """Link a bucket to a specified user, unlinking the bucket from any previous user.
+        :param str uid: user ID to link the bucket to
+        :param kwargs: optional params
+        :return: None
+        """
+        self._rgwadmin.bucket_link(self.name, self.id, uid, **kwargs)
+
+    def unlink(self, uid, **kwargs):
+        """Unlink a bucket from a specified user.
+        Primarily useful for changing bucket ownership.
+        :param str uid: current user id of the bucket
+        :param kwargs: optional params
+        :return: None
+        """
+        self._rgwadmin.bucket_unlink(uid, **kwargs)
+
+    def delete(self, purge_objects=True, **kwargs):
+        """Delete an existing bucket.
+        :param bool purge_objects:
+        :param kwargs: optional params
+        :return: None
+        """
+        self._rgwadmin.delete_bucket(self.name, purge_objects, **kwargs)
+
+    def remove_object(self, object_name, **kwargs):
+        """Remove an existing object from a bucket.
+        :param str object_name: the object name
+        :param kwargs: optional params
+        :return: None
+        """
+        self._rgwadmin.remove_object(self.name, object_name, **kwargs)
+
     def __str__(self):
         return "<Bucket: %s>" % self.name
 

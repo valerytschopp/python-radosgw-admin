@@ -253,14 +253,13 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         response = self.make_request('DELETE', path='/user', query_params=params)
         return self._process_response(response) is None
 
-    def get_bucket(self, bucket, **kwargs):
+    def get_bucket(self, bucket_name, **kwargs):
         """Get a bucket information.
-        :param str bucket: the bucket name
+        :param str bucket_name: the bucket name
         :returns BucketInfo:
         :see: http://ceph.com/docs/next/radosgw/adminops/#get-bucket-info
         """
-        params = {'bucket': bucket}
-        _kwargs_get('bucket', kwargs, params)
+        params = {'bucket': bucket_name}
         _kwargs_get('stats', kwargs, params, True)
         _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('GET', path='/bucket', query_params=params)
@@ -300,21 +299,22 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
             buckets.append(bucket)
         return buckets
 
-    def check_bucket_index(self, bucket, check_objects=True, fix=False, **kwargs):
+    def check_bucket_index(self, bucket_name, check_objects=True, fix=False, **kwargs):
         """Check the index of an existing bucket.
-        :param bucket:
-        :param check_objects:
-        :param fix:
+        :param str bucket_name:
+        :param bool check_objects:
+        :param bool fix:
         :return: nothing
         :see: http://docs.ceph.com/docs/master/radosgw/adminops/#check-bucket-index
         """
-        params = {'bucket': bucket,
+        params = {'bucket': bucket_name,
                   'check-objects': check_objects,
                   'fix': fix }
         # optional query parameters
         _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('GET', path='/bucket?index', query_params=params)
         body = self._process_response(response)
+        # print "XXX: body:", body
 
     def delete_bucket(self, bucket_name, purge_objects=True, **kwargs):
         """Delete an existing bucket.

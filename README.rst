@@ -13,8 +13,6 @@ Requirement
 Installation
 ------------
 
-.. image:: https://img.shields.io/pypi/v/nine.svg :target: https://pypi.python.org/pypi/radosgw-admin
-
 The package is available on https://pypi.python.org/pypi/radosgw-admin. To install it use ``pip``::
 
   pip install radosgw-admin

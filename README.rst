@@ -56,7 +56,6 @@ See the example in `examples/radosgw-admin-example.py <https://github.com/valery
 Here is a simple example:
 
 .. code-block:: python
-   :lienos:
 
   import radosgw
 

@@ -31,6 +31,8 @@ class RadosGWAdminError(boto.exception.BotoServerError):
                                                 body,
                                                 *args)
         if body:
+            if isinstance(body, bytes) and hasattr(body, 'decode'):
+                body = body.decode('utf-8')
             error = json.loads(body)
             self.code = error['Code']
         else:
@@ -50,6 +52,8 @@ class RadosGWAdminError(boto.exception.BotoServerError):
 def factory(status, reason, body=None, *args):
     """Returns the correct error, based on the error code in the body."""
     if body:
+        if isinstance(body, bytes) and hasattr(body, 'decode'):
+            body = body.decode('utf-8')
         error = json.loads(body)
         code = error['Code']
         exception_class = boto.utils.find_class(__name__, code)

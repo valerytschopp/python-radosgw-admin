@@ -144,7 +144,13 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         users = []
         for uid in uids:
             boto.log.debug('uid: %s' % uid)
-            user = self.get_user(uid)
+            if 'stats' in kwargs and kwargs['stats']:
+                try:  # Valid user without stats return 404 error
+                    user = self.get_user(uid, stats=True)
+                except radosgw.exception.NoSuchKey:
+                    user = self.get_user(uid, stats=False)
+            else:
+                user = self.get_user(uid)
             users.append(user)
         return users
 
@@ -159,6 +165,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         params = {'uid': uid}
         # optional query parameters
         _kwargs_get('format', kwargs, params, 'json')
+        _kwargs_get('stats', kwargs, params, False)
         response = self.make_request('GET', path='/user', query_params=params)
         body = self._process_response(response)
         user_dict = json.loads(body)

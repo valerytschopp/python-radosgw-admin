@@ -105,6 +105,10 @@ class UserInfo(object):
                 cap_dict = cap.__dict__
             ucap = Cap(cap_dict['type'], cap_dict['perm'])
             self.caps.append(ucap)
+        if 'stats' in user_dict:
+            self.stats = Stats(user_dict['stats'])
+        else:
+            self.stats = None
 
     @property
     def id(self):
@@ -185,3 +189,21 @@ class Cap(object):
 
     def __repr__(self):
         return '<Capability: %s=%s>' % (self.type, self.perm)
+
+
+class Stats(object):
+    """RADOS Gateway User stats"""
+    def __init__(self, stats_dict):
+        self._object = stats_dict
+        for key in stats_dict:
+            setattr(self, key.lower(), stats_dict[key])
+
+    def __repr__(self):
+        return "<Usage: num_objects={} size={} size_actual={} size_kb={} " \
+               "size_kb_actual={} size_kb_utilized={} size_utilized={}>".format(self.num_objects,
+                                                                                self.size,
+                                                                                self.size_actual,
+                                                                                self.size_kb,
+                                                                                self.size_kb_actual,
+                                                                                self.size_kb_utilized,
+                                                                                self.size_utilized)

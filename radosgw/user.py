@@ -61,6 +61,7 @@ class UserInfo(object):
         else:
             user_dict = user.__dict__
         self.user_id = user_dict['user_id']
+        self.tenant = user_dict.get('tenant')
         self.display_name = user_dict['display_name']
         self.email = user_dict['email']
         self.suspended = user_dict['suspended']

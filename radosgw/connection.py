@@ -156,6 +156,8 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :see: http://ceph.com/docs/next/radosgw/adminops/#get-user-info
         """
         # mandatory query parameters
+        if 'tenant' in kwargs:
+            uid = kwargs['tenant'] + '$' + uid
         params = {'uid': uid}
         # optional query parameters
         _kwargs_get('format', kwargs, params, 'json')
@@ -173,6 +175,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
     def create_user(self, uid, display_name, **kwargs):
         """Creates a new user.
         :param str uid: the user id
+        :param str tenant: the user tenant
         :param str display_name: the display name
         :param str email: the user email
         :param str key_type: the key_type 's3' or 'swift'. Default: 's3'
@@ -186,6 +189,8 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :see: http://ceph.com/docs/next/radosgw/adminops/#create-user
         """
         # mandatory query parameters
+        if 'tenant' in kwargs:
+            uid = kwargs['tenant'] + "$" + uid
         params = {'uid': uid, 'display-name': display_name}
         # optional query parameters
         _kwargs_get('email', kwargs, params)

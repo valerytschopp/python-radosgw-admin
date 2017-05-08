@@ -15,8 +15,6 @@
 #
 # author: Valery Tschopp <valery.tschopp@switch.ch>
 import json
-import urllib
-
 import boto
 import boto.connection
 import boto.s3.bucket
@@ -25,6 +23,11 @@ import boto.s3.connection
 import radosgw.exception
 from radosgw.user import UserInfo
 from radosgw.bucket import BucketInfo
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
 
 
 class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
@@ -91,7 +94,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         if not query_params:
             query_params = {}
         else:
-            query = urllib.urlencode(query_params)
+            urlencode(query_params)
             # handle path like /admin/bucket?index&<params>
             path = "{}{}{}".format(path,
                                    '&' if '?' in path else '?',
@@ -110,6 +113,8 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
             if not body:
                 return None
             else:
+                if isinstance(body, bytes) and hasattr(body, 'decode'):
+                    body = body.decode('utf-8')
                 return body
         else:
             boto.log.error('%s %s' % (response.status, response.reason))

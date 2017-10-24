@@ -94,7 +94,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         if not query_params:
             query_params = {}
         else:
-            urlencode(query_params)
+            query = urlencode(query_params)
             # handle path like /admin/bucket?index&<params>
             path = "{}{}{}".format(path,
                                    '&' if '?' in path else '?',

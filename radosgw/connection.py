@@ -195,7 +195,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :param str secret_key: the secret key
         :param bool generate_key: True to auto generate a new key pair. Default: True
         :param str user_caps: the user caps. i.e. "user=read; usage=read,write"
-        :param int max_bucket: max bucket for the user. Default: 1000
+        :param int max_buckets: max bucket for the user. Default: 1000
         :param bool suspended: to suspend a user
         :return radosgw.user.UserInfo: the created user
         :see: http://ceph.com/docs/next/radosgw/adminops/#create-user
@@ -211,7 +211,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         _kwargs_get('secret_key', kwargs, params)
         _kwargs_get('user_caps', kwargs, params)
         _kwargs_get('generate_key', kwargs, params, True)
-        _kwargs_get('max_bucket', kwargs, params)
+        _kwargs_get('max_buckets', kwargs, params)
         _kwargs_get('suspended', kwargs, params)
         _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('PUT', path='/user', query_params=params)
@@ -235,7 +235,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :param str secret_key: the secret key
         :param bool generate_key: True to auto generate a new key pair. Default: True
         :param str user_caps: the user caps. i.e. "user=read; usage=read,write"
-        :param int max_bucket: max bucket for the user. Default: 1000
+        :param int max_buckets: max bucket for the user. Default: 1000
         :param bool suspended: to suspend a user
         :return radosgw.user.UserInfo: the updated user
         :see: http://ceph.com/docs/next/radosgw/adminops/#modify-user
@@ -249,7 +249,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         _kwargs_get('secret_key', kwargs, params)
         _kwargs_get('user_caps', kwargs, params)
         _kwargs_get('generate_key', kwargs, params, False)
-        _kwargs_get('max_bucket', kwargs, params)
+        _kwargs_get('max_buckets', kwargs, params)
         _kwargs_get('suspended', kwargs, params)
         _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('POST', path='/user', query_params=params)

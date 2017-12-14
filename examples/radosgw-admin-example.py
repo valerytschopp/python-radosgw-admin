@@ -81,11 +81,14 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--secret-key', help='S3 secret key', required=True)
     parser.add_argument('-v', '--verbose', help='verbose', action='store_true')
     parser.add_argument('-d', '--debug', help='debug', action='store_true')
+    parser.add_argument('--signature', help='AWS signature version to use: AWS4 or AWS2', default='AWS4')
     args = parser.parse_args()
 
     rgwadmin = radosgw.connection.RadosGWAdminConnection(host=args.hostname,
                                                          access_key=args.access_key,
-                                                         secret_key=args.secret_key)
+                                                         secret_key=args.secret_key,
+                                                         debug=args.debug,
+                                                         aws_signature=args.signature)
 
     print "{:*^20}".format('Buckets')
     buckets = rgwadmin.get_buckets()

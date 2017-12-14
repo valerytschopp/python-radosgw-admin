@@ -38,6 +38,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
                  host,
                  access_key, secret_key,
                  admin_path='/admin',
+                 aws_signature='AWS4',
                  timeout=30,
                  is_secure=True, port=None,
                  proxy=None, proxy_port=None, proxy_user=None, proxy_pass=None,
@@ -46,12 +47,22 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
                  validate_certs=True):
         """Constructor."""
 
-        self.admin_path = admin_path
+        self._admin_path = admin_path
         if debug:
             boto.set_stream_logger('boto')
             debug_boto = 10
         else:
             debug_boto = 0
+
+        # AWS4 and AWS2 signature support
+        # see boto.auth.S3HmacAuthV4Handler
+        # see boto.auth.HmacAuthV1Handler
+        if aws_signature == 'AWS4':
+            # AWS4 signature
+            self._signature_algo = ['hmac-v4-s3']
+        else:
+            # old style AWS2 signature algo
+            self._signature_algo = ['hmac-v1']
 
         # init AWS connection
         boto.connection.AWSAuthConnection.__init__(self,
@@ -63,24 +74,27 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
                                                    proxy_user=proxy_user, proxy_pass=proxy_pass,
                                                    debug=debug_boto,
                                                    https_connection_factory=https_connection_factory,
-                                                   path=self.admin_path,
+                                                   path=self._admin_path,
                                                    provider='aws',
                                                    security_token=security_token,
                                                    suppress_consec_slashes=True,
                                                    validate_certs=validate_certs)
         # set http_socket_timeout
         self.http_connection_kwargs['timeout'] = timeout
+        if aws_signature == 'AWS4':
+            self._set_auth_region_name('s3')
+
 
     def __repr__(self):
         return '<%s:%s>' % (self.__class__.__name__, self.host)
 
     def get_admin_path(self):
         """Returns the admin query path prefix."""
-        return self.admin_path
+        return self._admin_path
 
     def _required_auth_capability(self):
-        """Authentication required is the same as S3 (boto.auth.HmacAuthV1Handler)"""
-        return ['hmac-v1']
+        """Authentication algo required for S3"""
+        return self._signature_algo
 
     def make_request(self, method, path, query_params=None, headers=None, data='', host=None,
                      sender=None, override_num_retries=3, retry_handler=None):

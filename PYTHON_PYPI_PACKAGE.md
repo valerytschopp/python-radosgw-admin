@@ -15,12 +15,12 @@ https://pypi.python.org
         testpypi
   
     [testpypi]
-    repository = https://testpypi.python.org/pypi
+    repository = https://test.pypi.org/legacy/
     username = valery-tschopp
     password = ********
   
     [pypi]
-    repository = https://pypi.python.org/pypi
+    repository = https://upload.python.org/legacy/
     username = valery-tschopp
     password = **********
 
@@ -38,7 +38,7 @@ https://pypi.python.org
     twine register -r testpypi dist/radosgw_admin-VERSION-py2.py3-none-any.whl
     twine upload -r testpypi dist/*
 
-Check https://testpypi.python.org
+Check https://test.pypi.org
 
 ### pypi
 
@@ -54,7 +54,7 @@ Check https://pypi.python.org
     virtualenv test-package
     cd test-package
     . bin/activate
-    pip install -i https://testpypi.python.org/pypi radosgw-admin
+    pip install -i https://test.pypi.org/legacy/ radosgw-admin
     #pip install radosgw-admin
 
     cp ../examples/*.py .

@@ -19,7 +19,7 @@ setup(
     install_requires=['boto'],
     packages=['radosgw'],
     url='https://github.com/valerytschopp/python-radosgw-admin',
-    license='Apache2',
+    license='GPLv3',
     description='Ceph RADOS Gateway admin operations REST API',
     long_description=open('README.rst').read(),
     #test_suite='tests'

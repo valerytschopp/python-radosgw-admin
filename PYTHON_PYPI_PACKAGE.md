@@ -54,7 +54,7 @@ Check https://pypi.python.org
     virtualenv test-package
     cd test-package
     . bin/activate
-    pip install -i https://test.pypi.org/legacy/ radosgw-admin
+    pip install -i https://test.pypi.org/simple/ radosgw-admin
     #pip install radosgw-admin
 
     cp ../examples/*.py .

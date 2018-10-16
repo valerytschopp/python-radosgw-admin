@@ -407,6 +407,43 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         return self._process_response(response) is None
 
 
+    def get_quota(self, uid, quota_type, **kwargs):
+        """Gets the quota of an specific quota_type (user or bucket).
+        :param str uid: current user id for the quota operation
+        :param str quota_type: type of the quota (user or bucket)
+        :param kwargs:
+        :return: None
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#quotas
+        """
+        params = {'uid': uid, 'quota-type': quota_type }
+        # optional query parameters
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('GET', path='/user?quota', query_params=params)
+        return self._process_response(response)
+
+
+    def set_quota(self, uid, quota_type, max_objects=-1, max_size_kb=-1, enabled=True, **kwargs):
+        """Gets the quota of an specific quota_type (user or bucket).
+        :param str uid: current user id for the quota operation
+        :param str quota_type: type of the quota (user or bucket)
+        :param int max_objects: maximum number of objects
+        :param str max_size_kb: quota size in kb
+        :param bool enabled: The enabled option specifies whether the quota should be enabled
+        :param kwargs:
+        :return: None
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#quotas
+        """
+        params = {'uid': uid,
+                  'quota-type': quota_type,
+                  'max-objects': max_objects,
+                  'max-size-kb': max_size_kb,
+                  'enabled': enabled }
+        # optional query parameters
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('PUT', path='/user?quota', query_params=params)
+        return self._process_response(response) is None
+
+
 # utilities
 def _kwargs_get(key, kwargs, params, default=None):
     nkey = key.replace('_', '-')

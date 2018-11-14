@@ -151,7 +151,10 @@ class UserInfo(object):
         :returns radosgw.user.UserInfo: the updated user
         :see: radosgw.connection.RadosGWAdminConnection#create_user
         """
-        user = self._rgwadmin.update_user(uid=self.user_id, **kwargs)
+        uid = self.user_id
+        if self.tenant:
+            uid = "{}${}".format(self.tenant, self.user_id)
+        user = self._rgwadmin.update_user(uid, **kwargs)
         self._update_from_user(user)
         return self
 

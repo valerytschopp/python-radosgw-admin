@@ -234,7 +234,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         user = UserInfo(self, user_dict)
         return user
 
-    # uid= UID
+    # uid= UID or TENANT$UID
     # display_name= DISPLAY_NAME
     # email= None, key_type= 's3|swift',
     # access_key= None, secret_key= None, user_caps= None, generate_key= False,

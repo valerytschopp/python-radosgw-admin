@@ -32,7 +32,7 @@ except ImportError:
 
 class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
     """Ceph RADOS Gateway (radosgw) admin connection.
-    :see: http://ceph.com/docs/next/radosgw/adminops/
+    :see: http://docs.ceph.com/docs/master/radosgw/adminops/
     """
     def __init__(self,
                  host,
@@ -138,7 +138,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
     # uid= None, start= None, end= None, show_summary= True, show_entries= True, format= 'json'
     def get_usage(self, **kwargs):
         """Gets bandwidth usage information. Doesn't work!
-        :see: http://ceph.com/docs/next/radosgw/adminops/#get-usage
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#get-usage
         """
         params = {}
         _kwargs_get('uid', kwargs, params)
@@ -178,7 +178,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :param str uid: the user id
         :returns radosgw.user.UserInfo: the user info
         :throws radosgw.exception.RadosGWAdminError: if an error occurs
-        :see: http://ceph.com/docs/next/radosgw/adminops/#get-user-info
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#get-user-info
         """
         # mandatory query parameters
         if 'tenant' in kwargs:
@@ -212,7 +212,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :param int max_buckets: max bucket for the user. Default: 1000
         :param bool suspended: to suspend a user
         :return radosgw.user.UserInfo: the created user
-        :see: http://ceph.com/docs/next/radosgw/adminops/#create-user
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#create-user
         """
         # mandatory query parameters
         if 'tenant' in kwargs:
@@ -252,7 +252,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :param int max_buckets: max bucket for the user. Default: 1000
         :param bool suspended: to suspend a user
         :return radosgw.user.UserInfo: the updated user
-        :see: http://ceph.com/docs/next/radosgw/adminops/#modify-user
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#modify-user
         """
         params = {'uid': uid}
         # optional query parameters
@@ -277,7 +277,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :param str uid: the user_id
         :param bool purge_data: purge the user data. default: True
         :returns bool:
-        :see: http://ceph.com/docs/next/radosgw/adminops/#remove-user
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#remove-user
         """
         params = {'uid': uid, 'purge-data': purge_data}
         _kwargs_get('format', kwargs, params, 'json')
@@ -288,7 +288,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         """Get a bucket information.
         :param str bucket_name: the bucket name
         :returns BucketInfo:
-        :see: http://ceph.com/docs/next/radosgw/adminops/#get-bucket-info
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#get-bucket-info
         """
         params = {'bucket': bucket_name}
         _kwargs_get('stats', kwargs, params, True)
@@ -304,7 +304,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         """Get all, or user specific, buckets information.
         :param str uid: the user id
         :returns list: the list of buckets information
-        :see: http://ceph.com/docs/next/radosgw/adminops/#get-bucket-info
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#get-bucket-info
         """
         params = {'stats': True}
         if uid:

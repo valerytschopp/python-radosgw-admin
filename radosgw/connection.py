@@ -284,6 +284,18 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         response = self.make_request('DELETE', path='/user', query_params=params)
         return self._process_response(response) is None
 
+    # def create_key(self, uid, **kwargs):
+    #     """
+    #     :see: http://docs.ceph.com/docs/master/radosgw/adminops/#create-key
+    #     """
+    #     pass
+
+    # def remove_key(self, uid, **kwargs):
+    #     """
+    #     :see: http://docs.ceph.com/docs/master/radosgw/adminops/#remove-key
+    #     """
+    #     pass
+
     def get_bucket(self, bucket_name, **kwargs):
         """Get a bucket information.
         :param str bucket_name: the bucket name
@@ -352,6 +364,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :param str bucket_name:
         :param bool purge_objects:
         :return: None
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#remove-bucket
         """
         params = {'bucket': bucket_name,
                   'purge-objects': purge_objects }
@@ -398,6 +411,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :param str object_name:
         :param kwargs:
         :return: None
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#remove-object
         """
         params = {'bucket': bucket_name,
                   'object': object_name }

@@ -11,7 +11,7 @@ except ImportError:
 
 setup(
     name='radosgw-admin',
-    version='1.3.0',
+    version='1.4.0',
     author='Valery Tschopp',
     author_email='valery.tschopp@gmail.com',
     include_package_data=True,

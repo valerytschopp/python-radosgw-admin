@@ -455,7 +455,8 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         # optional query parameters
         _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('PUT', path='/user?quota', query_params=params)
-        return self._process_response(response) is None
+        body = self._process_response(response)
+        return json.loads(body)
 
 
 # utilities

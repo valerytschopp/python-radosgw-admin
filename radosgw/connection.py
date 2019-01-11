@@ -436,7 +436,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         return self._process_response(response)
 
 
-    def set_quota(self, uid, quota_type, max_objects=-1, max_size_kb=-1, enabled=True, **kwargs):
+    def set_quota(self, uid, quota_type, **kwargs):
         """Gets the quota of an specific quota_type (user or bucket).
         :param str uid: current user id for the quota operation
         :param str quota_type: type of the quota (user or bucket)
@@ -447,12 +447,11 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         :return: None
         :see: http://docs.ceph.com/docs/master/radosgw/adminops/#quotas
         """
-        params = {'uid': uid,
-                  'quota-type': quota_type,
-                  'max-objects': max_objects,
-                  'max-size-kb': max_size_kb,
-                  'enabled': enabled }
+        params = {'uid': uid, 'quota-type': quota_type }
         # optional query parameters
+        _kwargs_get('max_objects', kwargs, params)
+        _kwargs_get('max_size_kb', kwargs, params)
+        _kwargs_get('enabled', kwargs, params)
         _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('PUT', path='/user?quota', query_params=params)
         body = self._process_response(response)
@@ -462,7 +461,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
 # utilities
 def _kwargs_get(key, kwargs, params, default=None):
     nkey = key.replace('_', '-')
-    if key in kwargs:
+    if key in kwargs and kwargs[key]:
         params[nkey] = kwargs[key]
     elif default is not None:
         params[nkey] = default

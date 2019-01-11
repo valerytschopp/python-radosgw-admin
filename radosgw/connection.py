@@ -284,17 +284,42 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         response = self.make_request('DELETE', path='/user', query_params=params)
         return self._process_response(response) is None
 
-    # def create_key(self, uid, **kwargs):
-    #     """
-    #     :see: http://docs.ceph.com/docs/master/radosgw/adminops/#create-key
-    #     """
-    #     pass
+    def create_key(self, uid, **kwargs):
+        """Creates a key for the user specified
+        :param str uid: the user id
+        :param str key_type: the key_type 's3' or 'swift'. Default: 's3'
+        :param str access_key: the access key
+        :param str secret_key: the secret key
+        :param bool generate_key: True to auto generate a new key pair. Default: True
+        :return bool:
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#create-key
+        """
+        params = {'uid': uid}
+        # optional query parameters
+        _kwargs_get('key_type', kwargs, params)
+        _kwargs_get('access_key', kwargs, params)
+        _kwargs_get('secret_key', kwargs, params)
+        _kwargs_get('generate_key', kwargs, params, False)
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('PUT', path='/user?key', query_params=params)
+        body = self._process_response(response)
+        return json.loads(body)
 
-    # def remove_key(self, uid, **kwargs):
-    #     """
-    #     :see: http://docs.ceph.com/docs/master/radosgw/adminops/#remove-key
-    #     """
-    #     pass
+    def remove_key(self, access_key, **kwargs):
+        """Delete an existing access key
+        :param str access_key: the access key
+        :param str uid: the user id
+        :param str key_type: the key_type 's3' or 'swift'. Default: 's3'
+        :returns bool:
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#remove-key
+        """
+        params = {'access-key': access_key}
+        # optional query parameters
+        _kwargs_get('uid', kwargs, params)
+        _kwargs_get('key_type', kwargs, params)
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('DELETE', path='/user?key', query_params=params)
+        return self._process_response(response) is None
 
     def get_bucket(self, bucket_name, **kwargs):
         """Get a bucket information.

@@ -77,16 +77,20 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--hostname', help='radosgw hostname', required=True)
+    parser.add_argument('-p', '--port', help='radosgw port', required=True)
     parser.add_argument('-a', '--access-key', help='S3 access key', required=True)
     parser.add_argument('-s', '--secret-key', help='S3 secret key', required=True)
+    parser.add_argument('--insecure', help='disable ssl validation', action='store_true')
     parser.add_argument('-v', '--verbose', help='verbose', action='store_true')
     parser.add_argument('-d', '--debug', help='debug', action='store_true')
     parser.add_argument('--signature', help='AWS signature version to use: AWS4 or AWS2', default='AWS4')
     args = parser.parse_args()
 
     rgwadmin = radosgw.connection.RadosGWAdminConnection(host=args.hostname,
+                                                         port=args.port,
                                                          access_key=args.access_key,
                                                          secret_key=args.secret_key,
+                                                         is_secure=not args.insecure,
                                                          debug=args.debug,
                                                          aws_signature=args.signature)
 

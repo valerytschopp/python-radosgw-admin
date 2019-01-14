@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-H', '--hostname', help='radosgw hostname', required=True)
-    parser.add_argument('-p', '--port', help='radosgw port', required=True)
+    parser.add_argument('-p', '--port', help='radosgw port', default=443)
     parser.add_argument('-a', '--access-key', help='S3 access key', required=True)
     parser.add_argument('-s', '--secret-key', help='S3 secret key', required=True)
     parser.add_argument('--insecure', help='disable ssl validation', action='store_true')

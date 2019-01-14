@@ -20,7 +20,6 @@ https://pypi.python.org
     password = ********
   
     [pypi]
-    repository = https://upload.python.org/legacy/
     username = valery-tschopp
     password = **********
 
@@ -35,14 +34,12 @@ https://pypi.python.org
 
 ### testpypi
 
-    twine register -r testpypi dist/radosgw_admin-VERSION-py2.py3-none-any.whl
     twine upload -r testpypi dist/*
 
 Check https://test.pypi.org
 
 ### pypi
 
-    twine register dist/radosgw_admin-VERSION-py2.py3-none-any.whl
     twine upload dist/*
 
 Check https://pypi.python.org

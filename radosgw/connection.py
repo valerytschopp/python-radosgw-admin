@@ -351,15 +351,6 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         response = self.make_request('GET', path='/bucket', query_params=params)
         body = self._process_response(response)
         body_json = json.loads(body)
-        # WARNING: Hammer returns [ u"B_NAME1", { <B_INFO1> }, u"B_NAME2", { <B_INFO2> }, ...]
-        #          Jewel returns [ { <B_INFO1> }, { <B_INFO1> }, ... ]
-        #print "XXX: len(body_json):", len(body_json)
-        #print "XXX: type(body_json):", type(body_json)
-        #print "XXX: type(body_json[0]):", type(body_json[0])
-        if body_json:
-            if isinstance(body_json[0], unicode) or isinstance(body_json[0], str):
-                # Hammer (every second elt is the dict)
-                body_json = body_json[1::2]
         boto.log.debug('%d buckets' % len(body_json))
         buckets = []
         for bucket_dict in body_json:

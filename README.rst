@@ -77,7 +77,7 @@ Here is a simple example:
   # bucket operations
   buckets = rgwadmin.get_buckets()
   for bucket in buckets:
-      print bucket
+      print(bucket)
 
   testuser1_buckets = testuser1.get_buckets()
   for bucket in testuser1_buckets:

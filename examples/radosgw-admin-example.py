@@ -94,29 +94,29 @@ if __name__ == '__main__':
                                                          debug=args.debug,
                                                          aws_signature=args.signature)
 
-    print "{:*^20}".format('Buckets')
+    print("{:*^20}".format('Buckets'))
     buckets = rgwadmin.get_buckets()
-    print "{:>3} buckets".format(len(buckets))
+    print("{:>3} buckets".format(len(buckets)))
     i = 1
     total_size_kb = 0
     total_num_object = 0
     for bucket in buckets:
-        print "{:>3} bucket: {}".format(i, bucket)
+        print("{:>3} bucket: {}".format(i, bucket))
         if bucket.usage:
-            print "     usage: {}".format(bucket.usage)
+            print("     usage: {}".format(bucket.usage))
             total_size_kb += bucket.usage.size_kb
             total_num_object += bucket.usage.num_objects
         i += 1
-    print "Total: {} objects, {} KB".format(total_num_object, total_size_kb)
+    print("Total: {} objects, {} KB".format(total_num_object, total_size_kb))
 
-    print "{:*^20}".format('Users')
+    print("{:*^20}".format('Users'))
     # WARNING: get_users is very slow !!!
     #          one callout per user
     users = rgwadmin.get_users()
-    print "{:>3} users".format(len(users))
+    print("{:>3} users".format(len(users)))
     for user in users:
-        print "user:", user
+        print("user: {}".format(user))
         for key in user.keys:
-            print " key:", key
+            print(" key: {}".format(key))
         for cap in user.caps:
-            print " cap:", cap
+            print(" cap: {}".format(cap))

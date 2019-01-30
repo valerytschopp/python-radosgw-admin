@@ -5,6 +5,9 @@ Python REST API for the Ceph RADOS Gateway (radosgw) admin operations
 
 http://docs.ceph.com/docs/master/radosgw/adminops/
 
+**NOTICE:** The library support Ceph version >= 10.2 (Jewel). 
+Support for Ceph Hammer or older have been dropped starting with version 1.6.0 of the library.
+
 Requirement
 -----------
 

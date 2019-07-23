@@ -93,7 +93,7 @@ class UserInfo(object):
             else:
                 key_dict = key.__dict__
             swiftkey = Key(key_dict['user'],
-                           key_dict['access_key'], key_dict['secret_key'],
+                           None, key_dict['secret_key'],
                            'swift')
             self.swift_keys.append(swiftkey)
         # caps

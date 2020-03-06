@@ -170,8 +170,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
                     user = self.get_user(uid, stats=False)
             else:
                 user = self.get_user(uid)
-            users.append(user)
-        return users
+            yield user
 
     def get_user(self, uid, **kwargs):
         """Get the user information.

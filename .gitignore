@@ -30,6 +30,7 @@ pip-log.txt
 .tox
 nosetests.xml
 test-package/
+scripts/
 
 # Translations
 *.mo

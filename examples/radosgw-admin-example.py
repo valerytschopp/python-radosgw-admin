@@ -96,7 +96,6 @@ if __name__ == '__main__':
 
     print("{:*^20}".format('Buckets'))
     buckets = rgwadmin.get_buckets()
-    print("{:>3} buckets".format(len(buckets)))
     i = 1
     total_size_kb = 0
     total_num_object = 0
@@ -113,7 +112,6 @@ if __name__ == '__main__':
     # WARNING: get_users is very slow !!!
     #          one callout per user
     users = rgwadmin.get_users()
-    print("{:>3} users".format(len(users)))
     for user in users:
         print("user: {}".format(user))
         for key in user.keys:

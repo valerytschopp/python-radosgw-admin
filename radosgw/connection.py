@@ -153,14 +153,15 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         return usage
 
     def get_users(self, **kwargs):
-        """Get all the users information."""
+        """Get all the users information.
+        :returns iterator: iterator of users information
+        """
         params = {}
         # optional query parameters
         _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('GET', path='/metadata/user', query_params=params)
         body = self._process_response(response)
         uids = json.loads(body)
-        users = []
         for uid in uids:
             boto.log.debug('uid: %s' % uid)
             if 'stats' in kwargs and kwargs['stats']:
@@ -339,7 +340,7 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
     def get_buckets(self, uid=None, **kwargs):
         """Get all, or user specific, buckets information.
         :param str uid: the user id
-        :returns list: the list of buckets information
+        :returns iterator: iterator of buckets information
         :see: http://docs.ceph.com/docs/master/radosgw/adminops/#get-bucket-info
         """
         params = {'stats': True}
@@ -351,11 +352,10 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         body = self._process_response(response)
         body_json = json.loads(body)
         boto.log.debug('%d buckets' % len(body_json))
-        buckets = []
         for bucket_dict in body_json:
             bucket = BucketInfo(self, bucket_dict)
-            buckets.append(bucket)
-        return buckets
+            yield bucket
+
 
     def check_bucket_index(self, bucket_name, check_objects=True, fix=False, **kwargs):
         """Check the index of an existing bucket.

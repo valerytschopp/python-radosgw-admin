@@ -151,6 +151,18 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         body = self._process_response(response)
         usage = json.loads(body)
         return usage
+    
+    def get_uids(self, **kwargs):
+        """Get all the users uid.
+        :return list uids: the list of uid
+        """
+        params = {}
+        # optional query parameters
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('GET', path='/metadata/user', query_params=params)
+        body = self._process_response(response)
+        uids = json.loads(body)
+        return uids
 
     def get_users(self, **kwargs):
         """Get all the users information.

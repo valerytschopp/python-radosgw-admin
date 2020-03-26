@@ -11,7 +11,7 @@ Changes
 -------
 - Version 1.6: Support for Ceph Hammer or older have been dropped.
 - Version 1.7: Functions ``get_buckets()`` and ``get_users()`` returns an iterator, not a list anymore.
-
+- Version 1.7.1: Functions ``get_uids()`` added.
 
 Requirement
 -----------

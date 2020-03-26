@@ -37,3 +37,7 @@ scripts/
 
 # Mr Developer
 .mr.developer.cfg
+
+# VT: testing info
+RGW_ADMIN.md
+os.s1-admin.sh

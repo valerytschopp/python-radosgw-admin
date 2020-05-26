@@ -6,29 +6,35 @@ https://testpypi.python.org
 
 https://pypi.python.org
 
-
 ## ~/.pypirc
 
     [distutils]
     index-servers=
         pypi
         testpypi
-  
+
     [testpypi]
     repository = https://test.pypi.org/legacy/
     username = valery-tschopp
     password = ********
-  
+
     [pypi]
     username = valery-tschopp
     password = **********
-
 
 ## Clean up & build
 
     rm -fr build dist radosgw_admin.egg-info
     python setup.py sdist bdist_wheel
 
+## Test local build
+
+    rm -fr test-local-venv
+    virtualenv test-local-venv
+    . test-local-venv/bin/activate
+    python setup.py install
+    python examples/radosgw-admin-example.py --hostname $S3_HOSTNAME --access-key $S3_ACCESS_KEY --secret-key $S3_SECRET_KEY
+    deactivate
 
 ## Register and upload files
 
@@ -44,19 +50,15 @@ Check https://test.pypi.org
 
 Check https://pypi.python.org
 
+## Test Package
 
-## Test
-
-    rm -fr test-package
-    virtualenv test-package
-    cd test-package
-    . bin/activate
+    rm -fr test-package-venv
+    virtualenv test-package-venv
+    . test-package-venv/bin/activate
     pip install -i https://test.pypi.org/simple/ radosgw-admin
     #pip install radosgw-admin
 
+    python examples/radosgw-admin-example.py --hostname $S3_HOSTNAME --access-key $S3_ACCESS_KEY --secret-key $S3_SECRET_KEY
     cp ../examples/*.py .
-    python radosgw-admin-example.py --hostname $S3_HOSTNAME --access-key $S3_ACCESS_KEY --secret-key $S3_SECRET_KEY
 
     deactivate
-
-

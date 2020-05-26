@@ -29,7 +29,8 @@ pip-log.txt
 .coverage
 .tox
 nosetests.xml
-test-package/
+test-package-venv/
+test-local-venv/
 scripts/
 
 # Translations

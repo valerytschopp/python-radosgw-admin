@@ -105,6 +105,14 @@ class BucketInfo(object):
         """
         self._rgwadmin.remove_object(self.name, object_name, **kwargs)
 
+    def policy(self, object_name=None, **kwargs):
+        """get Bucket or Object Policy.
+        :param str object_name: the object name:
+        :param kwargs: optional params
+        :return: bucket or object policy
+        """
+        self._rgwadmin.get_policy(self.name, object_name, **kwargs)
+
     def __str__(self):
         return "<Bucket: %s>" % self.name
 

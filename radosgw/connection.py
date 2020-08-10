@@ -431,7 +431,6 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         body = self._process_response(response)
         return self._process_response(response) is None
 
-
     def remove_object(self, bucket_name, object_name, **kwargs):
         """Remove an existing object from a bucket.
         :param str bucket_name:
@@ -447,6 +446,21 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         response = self.make_request('DELETE', path='/bucket?object', query_params=params)
         return self._process_response(response) is None
 
+    def get_policy(self, bucket_name, object_name=None, **kwargs):
+        """Read the policy of an object or bucket.
+        :param str bucket_name:
+        :param str object_name:
+        :param kwargs:
+        :return: bucket or object policy
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#get-bucket-or-object-policy
+        """
+        params = {'bucket': bucket_name}
+        if object_name:
+            params['object'] = object_name
+        # optional query parameters
+        _kwargs_get('format', kwargs, params, 'json')
+        response = self.make_request('GET', path='/bucket?policy', query_params=params)
+        return self._process_response(response)
 
     def get_quota(self, uid, quota_type, **kwargs):
         """Gets the quota of an specific quota_type (user or bucket).

@@ -151,6 +151,19 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         body = self._process_response(response)
         usage = json.loads(body)
         return usage
+
+    def delete_usage(self, **kwargs):
+        """Trim usage
+        :see: http://docs.ceph.com/docs/master/radosgw/adminops/#trim-usage
+        """
+        params = {}
+        _kwargs_get('uid', kwargs, params)
+        _kwargs_get('start', kwargs, params)
+        _kwargs_get('end', kwargs, params)
+        _kwargs_get('remove-all', kwargs, params)
+        response = self.make_request('DELETE', path='/usage', query_params=params)
+        body = self._process_response(response)
+        return body
     
     def get_uids(self, **kwargs):
         """Get all the users uid.
@@ -475,7 +488,6 @@ class RadosGWAdminConnection(boto.connection.AWSAuthConnection):
         _kwargs_get('format', kwargs, params, 'json')
         response = self.make_request('GET', path='/user?quota', query_params=params)
         return self._process_response(response)
-
 
     def set_quota(self, uid, quota_type, **kwargs):
         """Gets the quota of an specific quota_type (user or bucket).

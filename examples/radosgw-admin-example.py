@@ -118,3 +118,8 @@ if __name__ == '__main__':
             print(" key: {}".format(key))
         for cap in user.caps:
             print(" cap: {}".format(cap))
+
+    print("{:*^20}".format('User IDs'))
+    uids = rgwadmin.get_uids()
+    for uid in uids:
+        print("uid: {}".format(uid))

@@ -33,6 +33,7 @@ https://pypi.python.org
     virtualenv test-local-venv
     . test-local-venv/bin/activate
     python setup.py install
+    . os.s1-admin.sh
     python examples/radosgw-admin-example.py --hostname $S3_HOSTNAME --access-key $S3_ACCESS_KEY --secret-key $S3_SECRET_KEY
     deactivate
 
@@ -44,20 +45,33 @@ https://pypi.python.org
 
 Check https://test.pypi.org
 
+### Test testpypi Package
+
+    rm -fr test-package-venv
+    virtualenv test-package-venv
+    . test-package-venv/bin/activate
+    pip install -i https://test.pypi.org/simple/ radosgw-admin
+
+    . os.s1-admin.sh
+    python examples/radosgw-admin-example.py --hostname $S3_HOSTNAME --access-key $S3_ACCESS_KEY --secret-key $S3_SECRET_KEY
+
+    deactivate
+
+
 ### pypi
 
     twine upload dist/*
 
 Check https://pypi.python.org
 
-## Test Package
+### Test pypi Package
 
     rm -fr test-package-venv
     virtualenv test-package-venv
     . test-package-venv/bin/activate
-    pip install -i https://test.pypi.org/simple/ radosgw-admin
-    #pip install radosgw-admin
+    pip install radosgw-admin
 
+    . os.s1-admin.sh
     python examples/radosgw-admin-example.py --hostname $S3_HOSTNAME --access-key $S3_ACCESS_KEY --secret-key $S3_SECRET_KEY
     cp ../examples/*.py .
 
